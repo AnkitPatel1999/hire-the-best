@@ -1,0 +1,20 @@
+.btn-block {
+    width: 100%;
+}
+.signup{
+    overflow: hidden;
+}
+.signin{
+    overflow: hidden;
+}
+
+.createNew{
+    margin-left:10px;
+}
+
+p{
+    margin-bottom:0;
+}
+a{
+    text-decoration: none !important;
+}
