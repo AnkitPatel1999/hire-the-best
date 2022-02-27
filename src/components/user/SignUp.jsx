@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import { auth } from "./../../firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const SignUp = () => {
   const [userData, setUserData] = useState({
@@ -10,16 +12,27 @@ const SignUp = () => {
     confirmPassword: "",
   });
 
+  const { email, password, confirmPassword } = userData;
+
   const handleInput = (e) => {
-    console.log(e.target.name+" "+e.target.value)
-    setUserData({...userData,[e.target.name]:e.target.value})
-    console.log(userData)
-  }
+    setUserData({ ...userData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log(userData)
-  }
+    e.preventDefault();
+    if (password === confirmPassword) {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((user) => {
+          console.log(user);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      console.log(userData);
+    } else {
+      console.log("Password not match");
+    }
+  };
 
   const signUpForm = () => {
     return (

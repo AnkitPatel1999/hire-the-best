@@ -1,8 +1,27 @@
+import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import { auth } from "./../../firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 const SignIn = () => {
+  const [userInput, setUserInput] = useState({ email: "", password: "" });
+  const { email, password } = userInput;
+  const handleInput = (e) => {
+    setUserInput({ ...userInput, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((res) => {
+        console.log(res.user);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    e.preventDefault();
+  };
   const signInForm = () => {
     return (
       <div className="">
@@ -18,6 +37,8 @@ const SignIn = () => {
                   className="form-control input-sm"
                   type="Email"
                   placeholder="Email"
+                  name="email"
+                  onChange={handleInput}
                 />
               </div>
             </div>
@@ -31,12 +52,15 @@ const SignIn = () => {
                   className="form-control input-sm"
                   type="password"
                   placeholder="Password"
+                  name="password"
+                  onChange={handleInput}
                 />
               </div>
             </div>
             <button
               type="submit"
               className="btn btn-outline-primary btn-block mt-3"
+              onClick={handleSubmit}
             >
               Log in
             </button>
@@ -44,8 +68,7 @@ const SignIn = () => {
               <p className="d-flex mt-2">
                 <span>Don't have account?</span>
                 <Link to="/signup" className="createNew">
-                  {" "}
-                  Create One{" "}
+                  Create One
                 </Link>
               </p>
               <Link to="/forgot-password">Forgot Password</Link>

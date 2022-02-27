@@ -1,0 +1,9 @@
+.container-fluid {
+  border-bottom: solid #0d6efd 1px;
+}
+
+.main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

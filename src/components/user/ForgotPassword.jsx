@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "./../../firebase";
 
 export default function ForgotPassword() {
   const [values, setValues] = useState({
@@ -7,9 +9,21 @@ export default function ForgotPassword() {
     loading: false,
     didRedirect: false,
   });
+  const emailRef = useRef(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    sendPasswordResetEmail(auth, emailRef.current.value)
+      .then((res) => {
+        setValues({ success: true });
+        console.log("mail sent successfully ", res);
+      })
+      .catch((error) => {
+        setValues({ error: true });
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode);
+      });
   };
 
   return (
@@ -22,31 +36,15 @@ export default function ForgotPassword() {
 
             <form>
               <div className="form-group mb-3">
-                <label>Current Password</label>
+                <label>Email</label>
                 <input
                   className="form-control"
-                  type="text"
-                  name="current-password"
+                  type="email"
+                  name="email"
+                  ref={emailRef}
                 />
               </div>
 
-              <div className="form-group mb-3">
-                <label>New Password</label>
-                <input
-                  className="form-control"
-                  type="password"
-                  name="new-password"
-                />
-              </div>
-
-              <div className="form-group mb-3">
-                <label>Confirm Password</label>
-                <input
-                  className="form-control"
-                  type="password"
-                  name="confirm-password"
-                />
-              </div>
               <div className="btn-row">
                 <button
                   type="submit"
@@ -57,26 +55,20 @@ export default function ForgotPassword() {
                 </button>
               </div>
             </form>
-            {/* <!-- *ngIf="success" --> */}
 
             {values.success && (
               <div className="alert alert-success mt-5">
                 <h4 className="alert-heading">Success!</h4>
-                <p>Password Changed Successfully</p>
+                <p>Email sent successfully</p>
               </div>
             )}
 
             {values.error && (
               <div className="alert alert-danger mt-5">
                 <h4 className="alert-heading">Error!</h4>
-                <p>Password Change failed</p>
+                <p>User Not Found</p>
               </div>
             )}
-
-            {/* <div *ngIf="error" className="alert alert-danger mt-5">
-            <h4 className="alert-heading">Error!</h4>
-            <p>{{error}}</p>
-        </div> */}
           </div>
         </div>
       </div>
