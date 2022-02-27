@@ -4,13 +4,23 @@ import { faLock, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { auth } from "./../../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import Home from "../home/Home";
 
 const SignIn = () => {
   const [userInput, setUserInput] = useState({ email: "", password: "" });
+  const [stage,setStage] = useState(1)
   const { email, password } = userInput;
   const handleInput = (e) => {
     setUserInput({ ...userInput, [e.target.name]: e.target.value });
   };
+
+  const onJobseeker = () => {
+    console.log("onJobseeker signin")
+  }
+
+  const onRecruiter = () => {
+    console.log("onRecruiter signin")
+  }
 
   const handleSubmit = (e) => {
     signInWithEmailAndPassword(auth, email, password)
@@ -78,7 +88,12 @@ const SignIn = () => {
       </div>
     );
   };
-  return <div>{signInForm()}</div>;
+  return (
+    <div>
+      {stage==1?<Home onRecruiter={onRecruiter} onJobseeker={onJobseeker}/>: signInForm()}
+    </div>
+  );
 };
 
 export default SignIn;
+    

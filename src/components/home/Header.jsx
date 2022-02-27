@@ -14,7 +14,7 @@ export default function Header() {
       } else {
         setUser(null);
         console.log("user = " + user);
-      }
+      } 
     });
   }, []);
 

@@ -4,6 +4,7 @@ import { faLock, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { auth } from "./../../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import Home from "../home/Home";
 
 const SignUp = () => {
   const [userData, setUserData] = useState({
@@ -11,11 +12,19 @@ const SignUp = () => {
     password: "",
     confirmPassword: "",
   });
-
+  const [stage, setStage] = useState(1);
   const { email, password, confirmPassword } = userData;
 
   const handleInput = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
+  };
+
+  const onJobseeker = () => {
+    console.log("onJobseeker SignUp");
+  };
+
+  const onRecruiter = () => {
+    console.log("onRecruiter SignUp");
   };
 
   const handleSubmit = (e) => {
@@ -102,7 +111,15 @@ const SignUp = () => {
       </div>
     );
   };
-  return <div>{signUpForm()}</div>;
+  return (
+    <div>
+      {stage == 1 ? (
+        <Home onJobseeker={onJobseeker} onRecruiter={onRecruiter} />
+      ) : (
+        signUpForm()
+      )}
+    </div>
+  );
 };
 
 export default SignUp;
