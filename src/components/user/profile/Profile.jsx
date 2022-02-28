@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 export default function Profile() {
   const [stage, setStage] = useState(1);
@@ -17,10 +19,17 @@ export default function Profile() {
     console.log(stage);
   };
 
+  const onBack = (stage) => {
+    setStage(stage);
+  };
+
   const jobPreference = () => {
     return (
       <div>
-        <h4>Job Preference</h4>
+        {/* <div onClick={() => onBack(1)} className="onProfileBackIcon">
+          <FontAwesomeIcon className="onBack" icon={faArrowLeft} />
+        </div> */}
+        <h4 className="mt-2">Job Preference</h4>
         <h6>What type of job are looking for?</h6>
         <div className="form-group mt-2 mb-2">
           <label>Job Type</label>
@@ -73,6 +82,9 @@ export default function Profile() {
   const myProfile = () => {
     return (
       <div>
+        <div onClick={() => onBack(1)} className="onProfileBackIcon">
+          <FontAwesomeIcon className="onBack" icon={faArrowLeft} />
+        </div>
         <h6 className="mt-2 mb-2">
           Complete Profile will help you connect with more recruiters
         </h6>
@@ -146,7 +158,10 @@ export default function Profile() {
   const highestEducation = () => {
     return (
       <div>
-        <h5>Highest Education</h5>
+        <div onClick={() => onBack(2)} className="onProfileBackIcon">
+          <FontAwesomeIcon className="onBack" icon={faArrowLeft} />
+        </div>
+        <h5 className="mt-2">Highest Education</h5>
         <b>Please fill in your highest education details</b>
 
         <div className="form-group mt-2 mb-2">
@@ -183,7 +198,10 @@ export default function Profile() {
   const myBio = () => {
     return (
       <div>
-        <h5>The Last Step!</h5>
+        <div onClick={() => onBack(3)} className="onProfileBackIcon">
+          <FontAwesomeIcon className="onBack" icon={faArrowLeft} />
+        </div>
+        <h5 className="mt-2">The Last Step!</h5>
 
         <div className="form-group mt-2 mb-2">
           <label>
