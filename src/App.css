@@ -1,20 +1,35 @@
 .btn-block {
-    width: 100%;
+  width: 100%;
 }
-.signup{
-    overflow: hidden;
+.signup {
+  overflow: hidden;
 }
-.signin{
-    overflow: hidden;
-}
-
-.createNew{
-    margin-left:10px;
+.signin {
+  overflow: hidden;
 }
 
-p{
-    margin-bottom:0;
+.createNew {
+  margin-left: 10px;
 }
-a{
-    text-decoration: none !important;
+
+p {
+  margin-bottom: 0;
+}
+a {
+  text-decoration: none !important;
+}
+
+.onBack {
+  padding-left: 7px;
+  padding-top: 6px;
+}
+
+.onBackIcon {
+  position: absolute;
+  margin-left: 20px;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  background: #0d6efd;
+  border-radius: 50%;
 }

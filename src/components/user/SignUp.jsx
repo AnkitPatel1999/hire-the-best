@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLock, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import {
+  faLock,
+  faEnvelope,
+  faArrowLeft,
+} from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import { auth } from "./../../firebase";
+import { auth, db } from "./../../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import Home from "../home/Home";
 
 const SignUp = () => {
@@ -13,26 +18,47 @@ const SignUp = () => {
     confirmPassword: "",
   });
   const [stage, setStage] = useState(1);
+  const [iam, setIam] = useState(null);
   const { email, password, confirmPassword } = userData;
 
+  useEffect(() => {
+    console.log(db);
+  });
   const handleInput = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
   const onJobseeker = () => {
     console.log("onJobseeker SignUp");
+    setIam("Jobseeker");
+    setStage(2);
   };
 
   const onRecruiter = () => {
     console.log("onRecruiter SignUp");
+    setIam("Recruiter");
+    setStage(2);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (password === confirmPassword) {
+      console.log(db.collection);
       createUserWithEmailAndPassword(auth, email, password)
-        .then((user) => {
-          console.log(user);
+        .then((res) => {
+          const userRef = doc(db, "users", email);
+          setDoc(userRef, {
+            uid: res.user.uid,
+            email: email,
+            password: password,
+            role: iam,
+          })
+            .then((res) => {
+              console.log(res);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         })
         .catch((error) => {
           console.log(error);
@@ -43,11 +69,22 @@ const SignUp = () => {
     }
   };
 
+  const onBack = () => {
+    setStage(1);
+    setIam(null);
+  };
+
   const signUpForm = () => {
     return (
       <div className="">
+        <div onClick={onBack} className="onBackIcon">
+          <FontAwesomeIcon className="onBack" icon={faArrowLeft} />
+        </div>
         <div className="col-md-4 offset-sm-4 text-left">
           <h3 className="text-center m-3">Register Yourself</h3>
+          <div>
+            I am a <b>{iam}</b>
+          </div>
           <form>
             <div className="form-group mb-3">
               <div className="input-group">

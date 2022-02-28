@@ -1,42 +1,79 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLock, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import {
+  faLock,
+  faEnvelope,
+  faArrowLeft,
+} from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import { auth } from "./../../firebase";
+import { auth, db } from "./../../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 import Home from "../home/Home";
 
 const SignIn = () => {
   const [userInput, setUserInput] = useState({ email: "", password: "" });
-  const [stage,setStage] = useState(1)
+  const [stage, setStage] = useState(1);
+  const [iam, setIam] = useState(null);
   const { email, password } = userInput;
   const handleInput = (e) => {
     setUserInput({ ...userInput, [e.target.name]: e.target.value });
   };
 
   const onJobseeker = () => {
-    console.log("onJobseeker signin")
-  }
+    console.log("onJobseeker signin");
+    setIam("Jobseeker");
+    setStage(2);
+  };
 
   const onRecruiter = () => {
-    console.log("onRecruiter signin")
-  }
-
-  const handleSubmit = (e) => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((res) => {
-        console.log(res.user);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    e.preventDefault();
+    console.log("onRecruiter signin");
+    setIam("Recruiter");
+    setStage(2);
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const userRef = doc(db, "users", email);
+    const docSnap = await getDoc(userRef);
+
+    if (docSnap.exists()) {
+      console.log("Document data:", docSnap.data());
+      if (iam === docSnap.data().role) {
+        signInWithEmailAndPassword(auth, email, password)
+          .then((res) => {
+            console.log(res.user);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        console.log("no " + iam + " available");
+      }
+    } else {
+      // doc.data() will be undefined in this case
+      console.log("user not found !");
+    }
+  };
+
+  const onBack = () => {
+    setStage(1);
+    setIam(null);
+  };
+
   const signInForm = () => {
     return (
       <div className="">
+        <div onClick={onBack} className="onBackIcon">
+          <FontAwesomeIcon className="onBack" icon={faArrowLeft} />
+        </div>
+
         <div className="col-md-4 offset-sm-4 text-left">
           <h3 className="text-center m-3">Login</h3>
+          <div>
+            I am a <b>{iam}</b>
+          </div>
           <form>
             <div className="form-group mb-3">
               <div className="input-group">
@@ -90,10 +127,13 @@ const SignIn = () => {
   };
   return (
     <div>
-      {stage==1?<Home onRecruiter={onRecruiter} onJobseeker={onJobseeker}/>: signInForm()}
+      {stage == 1 ? (
+        <Home onRecruiter={onRecruiter} onJobseeker={onJobseeker} />
+      ) : (
+        signInForm()
+      )}
     </div>
   );
 };
 
 export default SignIn;
-    
