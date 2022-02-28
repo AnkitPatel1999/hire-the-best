@@ -5,7 +5,8 @@ import SignIn from './components/user/SignIn'
 import SignUp from './components/user/SignUp'
 import ForgotPassword from './components/user/ForgotPassword'
 import Header from './components/home/Header'
-import Profile from './components/user/profile/Profile'
+import ProfileForm from './components/user/profile/ProfileForm'
+import Job from './components/user/jobs/Job'
 
 // import Home from './components/home/Home'
 // import { auth } from "./firebase";
@@ -33,7 +34,8 @@ function App() {
           <Route path="signin" exact element={<SignIn />} />
           <Route path="signup" element={<SignUp />} />
           <Route path="forgot-password" element={<ForgotPassword />} />
-          <Route path="profile" element={<Profile />} />
+          <Route path="profile-setup" element={<ProfileForm />} />
+          <Route path="job" element={<Job />} />
         </Routes>
       </BrowserRouter>
     </div>

@@ -5,13 +5,14 @@ import {
   faEnvelope,
   faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import { auth, db } from "./../../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import Home from "../home/Home";
 
 const SignUp = () => {
+  let navigate = useNavigate();
   const [userData, setUserData] = useState({
     email: "",
     password: "",
@@ -55,6 +56,7 @@ const SignUp = () => {
           })
             .then((res) => {
               console.log(res);
+              navigate('/profile-setup')
             })
             .catch((error) => {
               console.log(error);

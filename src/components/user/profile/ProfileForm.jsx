@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
-export default function Profile() {
+export default function ProfileForm() {
   const [stage, setStage] = useState(1);
+  const [whoIam, setWhoIam] = useState("Fresher");
   const jobTypeData = ["Full Time", "Part-time", "Internship", "Freelacer"];
   const functionalAreaData = [
     "Full Stack Engineer",
@@ -21,6 +22,11 @@ export default function Profile() {
 
   const onBack = (stage) => {
     setStage(stage);
+  };
+
+  const handleInput = (e) => {
+    console.log(e.target.value);
+    setWhoIam(e.target.value);
   };
 
   const jobPreference = () => {
@@ -124,6 +130,36 @@ export default function Profile() {
           </div>
         </div>
 
+        <label>I am </label>
+        <div className="form-group d-flex">
+          <div className="form-check m-2">
+            <input
+              className="form-check-input"
+              type="radio"
+              name="iam"
+              id="fresher"
+              value="Fresher"
+              onChange={handleInput}
+            />
+            <label className="form-check-label" for="fresher">
+              Fresher
+            </label>
+          </div>
+          <div className="form-check m-2">
+            <input
+              className="form-check-input"
+              type="radio"
+              name="iam"
+              id="experienced"
+              value="Experienced"
+              onChange={handleInput}
+            />
+            <label className="form-check-label" for="experienced">
+              Experienced
+            </label>
+          </div>
+        </div>
+
         <div className="form-group mt-2 mb-2">
           <label>First Name</label>
           <input type="text" className="form-control" />
@@ -195,6 +231,45 @@ export default function Profile() {
     );
   };
 
+  const workExperience = () => {
+    return (
+      <div>
+        <div onClick={() => onBack(2)} className="onProfileBackIcon">
+          <FontAwesomeIcon className="onBack" icon={faArrowLeft} />
+        </div>
+        <h5 className="mt-2">Work Experience</h5>
+
+        <div className="form-group mt-2 mb-2">
+          <label>Company Name</label>
+          <input type="text" className="form-control" />
+        </div>
+
+        <div className="form-group mt-2 mb-2">
+          <label>Start & End Date</label>
+          <input type="text" className="form-control" />
+        </div>
+
+        <div className="form-group mt-2 mb-2">
+          <label>My Designation</label>
+          <input type="text" className="form-control" />
+        </div>
+
+        <div className="form-group mt-2 mb-2">
+          <label>Role & Responsibility</label>
+          <input type="text" className="form-control" />
+        </div>
+
+        <button
+          type="button"
+          onClick={() => onSaveandNext(4)}
+          className="btn btn-primary mt-2 btn-block"
+        >
+          Save & Next
+        </button>
+      </div>
+    );
+  };
+
   const myBio = () => {
     return (
       <div>
@@ -225,9 +300,12 @@ export default function Profile() {
     <div className="col-md-4 offset-sm-4 text-left">
       {stage === 1 ? jobPreference() : ""}
       {stage === 2 ? myProfile() : ""}
-      {stage === 3 ? highestEducation() : ""}
+      {stage === 3
+        ? whoIam === "Fresher"
+          ? highestEducation()
+          : workExperience()
+        : ""}
       {stage === 4 ? myBio() : ""}
-
       {stage === 5 ? <h4>All Done</h4> : ""}
     </div>
   );

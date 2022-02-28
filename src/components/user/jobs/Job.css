@@ -1,0 +1,37 @@
+.salary {
+  color: #0d6efd;
+  font-weight: 700;
+  display: flex;
+  flex-flow: row-reverse;
+}
+
+.row3 {
+  display: flex;
+}
+.companyName {
+  margin-right: 10px;
+}
+
+.profilepic {
+  width: 25px;
+  height: 25px;
+  margin-right: 10px;
+}
+
+.hr {
+  margin: 10px auto;
+  width: 95%;
+}
+
+.experience {
+  background: #f0f3f3;
+  text-align: center;
+  color: #797e7e;
+}
+
+.degreeName {
+  background: #f0f3f3;
+  text-align: center;
+  width: 50%;
+  color: #797e7e;
+}
