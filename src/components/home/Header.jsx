@@ -14,7 +14,7 @@ export default function Header() {
       } else {
         setUser(null);
         console.log("user = " + user);
-      } 
+      }
     });
   }, []);
 
@@ -31,8 +31,14 @@ export default function Header() {
     <div>
       <div className="container-fluid">
         <div className="main">
-          <h3>Hire The Best</h3>
-          {user ? <h6 onClick={onSignout}>Sign Out</h6> : <Link to="/signin">Sign In</Link>}
+          <Link to="/">
+            <h3>Hire The Best</h3>
+          </Link>
+          {user ? (
+            <h6 onClick={onSignout}>Sign Out</h6>
+          ) : (
+            <Link to="/signin">Sign In</Link>
+          )}
         </div>
       </div>
     </div>

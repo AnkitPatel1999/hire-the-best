@@ -7,6 +7,11 @@
 
 .row3 {
   display: flex;
+  margin: 7px 0 0 0;
+}
+
+.row3>span {
+margin-right: 8px;
 }
 .companyName {
   margin-right: 10px;
@@ -34,4 +39,13 @@
   text-align: center;
   width: 50%;
   color: #797e7e;
+}
+
+.companyDescription{
+  font-size: 14px;
+}
+
+.row4{
+  font-size: 15px;
+  padding: 10px 0px;
 }

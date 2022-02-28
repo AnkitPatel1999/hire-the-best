@@ -5,13 +5,14 @@ import {
   faEnvelope,
   faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from "./../../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import Home from "../home/Home";
 
 const SignIn = () => {
+  let navigate = useNavigate();
   const [userInput, setUserInput] = useState({ email: "", password: "" });
   const [stage, setStage] = useState(1);
   const [iam, setIam] = useState(null);
@@ -44,6 +45,7 @@ const SignIn = () => {
         signInWithEmailAndPassword(auth, email, password)
           .then((res) => {
             console.log(res.user);
+            navigate("/profile-setup");
           })
           .catch((error) => {
             console.log(error);

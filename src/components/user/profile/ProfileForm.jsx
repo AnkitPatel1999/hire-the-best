@@ -1,9 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { auth, db } from "./../../../firebase";
+import { doc, setDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function ProfileForm() {
   const [stage, setStage] = useState(1);
+  const [values, setValues] = useState({
+    jobType: "",
+    functionalArea: "",
+    preferredCity: "",
+    expectedSalary: "",
+    stage:1
+  });
   const [whoIam, setWhoIam] = useState("Fresher");
   const jobTypeData = ["Full Time", "Part-time", "Internship", "Freelacer"];
   const functionalAreaData = [
@@ -14,10 +24,35 @@ export default function ProfileForm() {
     "Business Development Manager",
   ];
 
+  const [docEmail, setDocEmail] = useState(null);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setDocEmail(user.email);
+        console.log("user = " + user.email);
+      } else {
+        setDocEmail(null);
+        console.log("user = " + user);
+      }
+    });
+  }, []);
+
   const onSaveandNext = (stage) => {
     setStage(stage);
     console.log(typeof stage);
     console.log(stage);
+    if (stage === 2) {
+      const jobPrefRef = doc(db, "users", docEmail);
+      setDoc(jobPrefRef, values, { merge: true })
+        .then((res) => {
+          console.log(res);
+          // navigate("/profile-setup");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   const onBack = (stage) => {
@@ -26,20 +61,18 @@ export default function ProfileForm() {
 
   const handleInput = (e) => {
     console.log(e.target.value);
-    setWhoIam(e.target.value);
+    // setWhoIam(e.target.value);
+    setValues({ ...values, [e.target.name]: e.target.value });
   };
 
   const jobPreference = () => {
     return (
       <div>
-        {/* <div onClick={() => onBack(1)} className="onProfileBackIcon">
-          <FontAwesomeIcon className="onBack" icon={faArrowLeft} />
-        </div> */}
         <h4 className="mt-2">Job Preference</h4>
         <h6>What type of job are looking for?</h6>
         <div className="form-group mt-2 mb-2">
           <label>Job Type</label>
-          <select className="form-select">
+          <select className="form-select" name="jobType" onChange={handleInput}>
             <option value="">Select your job type</option>
             {jobTypeData.map((job) => (
               <option value={job}>{job}</option>
@@ -49,7 +82,11 @@ export default function ProfileForm() {
 
         <div className="form-group mt-2 mb-2">
           <label>Functional Area</label>
-          <select className="form-select">
+          <select
+            className="form-select"
+            name="functionalArea"
+            onChange={handleInput}
+          >
             <option value="">Select your Functional Area</option>
             {functionalAreaData.map((data) => (
               <option value={data}>{data}</option>
@@ -59,12 +96,21 @@ export default function ProfileForm() {
 
         <div className="form-group mt-2 mb-2">
           <label>Preferred City</label>
-          <input type="text" className="form-control" />
+          <input
+            type="text"
+            className="form-control"
+            name="preferredCity"
+            onChange={handleInput}
+          />
         </div>
 
         <div className="form-group mt-2 mb-2">
           <label>Expected Salary</label>
-          <select className="form-select">
+          <select
+            className="form-select"
+            name="expectedSalary"
+            onChange={handleInput}
+          >
             <option value="">Select your Expected Salary</option>
             <option value="Rs 1 LPA">Rs 1 LPA</option>
             <option value="Rs 2 LPA">Rs 2 LPA</option>

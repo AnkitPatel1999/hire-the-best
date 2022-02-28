@@ -31,11 +31,11 @@ function App() {
       <BrowserRouter>
         <Header />
         <Routes>
+          <Route path="/" element={<Job />} />
           <Route path="signin" exact element={<SignIn />} />
           <Route path="signup" element={<SignUp />} />
           <Route path="forgot-password" element={<ForgotPassword />} />
           <Route path="profile-setup" element={<ProfileForm />} />
-          <Route path="job" element={<Job />} />
         </Routes>
       </BrowserRouter>
     </div>

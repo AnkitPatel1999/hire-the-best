@@ -5,7 +5,7 @@ import {
   faEnvelope,
   faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from "./../../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
@@ -56,7 +56,7 @@ const SignUp = () => {
           })
             .then((res) => {
               console.log(res);
-              navigate('/profile-setup')
+              navigate("/profile-setup");
             })
             .catch((error) => {
               console.log(error);
