@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
+// import React, { useState, useEffect } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SignIn from './components/user/SignIn'
 import SignUp from './components/user/SignUp'
 import ForgotPassword from './components/user/ForgotPassword'
 import Header from './components/home/Header'
-import Home from './components/home/Home'
-import { auth } from "./firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import Profile from './components/user/profile/Profile'
+
+// import Home from './components/home/Home'
+// import { auth } from "./firebase";
+// import { onAuthStateChanged } from "firebase/auth";
 
 function App() {
   // const [user, setUser] = useState(null);
@@ -31,9 +33,8 @@ function App() {
           <Route path="signin" exact element={<SignIn />} />
           <Route path="signup" element={<SignUp />} />
           <Route path="forgot-password" element={<ForgotPassword />} />
+          <Route path="profile" element={<Profile />} />
         </Routes>
-        {/* {user ? "" : <Home />} */}
-
       </BrowserRouter>
     </div>
 
