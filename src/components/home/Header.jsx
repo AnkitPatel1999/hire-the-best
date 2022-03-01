@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import "./Header.css";
 import { auth } from "./../../firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
-import { Link } from "react-router-dom";
+import { Link , useNavigate} from "react-router-dom";
 
 export default function Header() {
   const [user, setUser] = useState(null);
+  const navigate = useNavigate()
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -22,6 +23,7 @@ export default function Header() {
     signOut(auth)
       .then((res) => {
         console.log(res);
+        navigate('/signin')
       })
       .catch((error) => {
         console.log(error);

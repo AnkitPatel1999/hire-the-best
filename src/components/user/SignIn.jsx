@@ -5,6 +5,7 @@ import {
   faEnvelope,
   faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
+
 import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from "./../../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -15,8 +16,20 @@ const SignIn = () => {
   let navigate = useNavigate();
   const [userInput, setUserInput] = useState({ email: "", password: "" });
   const [stage, setStage] = useState(1);
+  const [process, setProcess] = useState({
+    loading: false,
+    success: false,
+    error: false,
+  });
+  let [errors, setErrors] = useState({
+    emailError: "",
+    passwordError: "",
+  });
   const [iam, setIam] = useState(null);
   const { email, password } = userInput;
+  const { loading, success, error } = process;
+  const { emailError, passwordError } = errors;
+
   const handleInput = (e) => {
     setUserInput({ ...userInput, [e.target.name]: e.target.value });
   };
@@ -35,7 +48,21 @@ const SignIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrors(false);
 
+    if (!email && !password) {
+      setErrors({ emailError: "Email is required", passwordError: "Password is required" });
+      throw new Error("Invalid email and password")
+    }else if (!email) {
+      setErrors({ ...errors, emailError: "Email is required",passwordError:"" });
+      throw new Error("Invalid email")
+    }else if (!password) {
+      setErrors({ ...errors,emailError:"", passwordError: "Password is required" });
+      throw new Error("Invalid  password")
+    }
+
+    console.log(errors);
+    setProcess({ ...process, loading: true });
     const userRef = doc(db, "users", email);
     const docSnap = await getDoc(userRef);
 
@@ -57,6 +84,7 @@ const SignIn = () => {
       // doc.data() will be undefined in this case
       console.log("user not found !");
     }
+    setProcess({ ...process, loading: false });
   };
 
   const onBack = () => {
@@ -90,6 +118,7 @@ const SignIn = () => {
                   onChange={handleInput}
                 />
               </div>
+              <p className="text-warning">{emailError}</p>
             </div>
 
             <div className="form-group">
@@ -105,13 +134,25 @@ const SignIn = () => {
                   onChange={handleInput}
                 />
               </div>
+              <p className="text-warning">{passwordError}</p>
             </div>
             <button
               type="submit"
               className="btn btn-outline-primary btn-block mt-3"
               onClick={handleSubmit}
             >
-              Log in
+              {loading ? (
+                <div>
+                  <span
+                    class="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  Loading...
+                </div>
+              ) : (
+                "Log in"
+              )}
             </button>
             <div>
               <p className="d-flex mt-2">
