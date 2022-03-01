@@ -24,11 +24,12 @@ const SignIn = () => {
   let [errors, setErrors] = useState({
     emailError: "",
     passwordError: "",
+    errorMsg: "",
   });
   const [iam, setIam] = useState(null);
   const { email, password } = userInput;
   const { loading, success, error } = process;
-  const { emailError, passwordError } = errors;
+  const { emailError, passwordError, errorMsg } = errors;
 
   const handleInput = (e) => {
     setUserInput({ ...userInput, [e.target.name]: e.target.value });
@@ -51,14 +52,25 @@ const SignIn = () => {
     setErrors(false);
 
     if (!email && !password) {
-      setErrors({ emailError: "Email is required", passwordError: "Password is required" });
-      throw new Error("Invalid email and password")
-    }else if (!email) {
-      setErrors({ ...errors, emailError: "Email is required",passwordError:"" });
-      throw new Error("Invalid email")
-    }else if (!password) {
-      setErrors({ ...errors,emailError:"", passwordError: "Password is required" });
-      throw new Error("Invalid  password")
+      setErrors({
+        emailError: "Email is required",
+        passwordError: "Password is required",
+      });
+      throw new Error("Invalid email and password");
+    } else if (!email) {
+      setErrors({
+        ...errors,
+        emailError: "Email is required",
+        passwordError: "",
+      });
+      throw new Error("Invalid email");
+    } else if (!password) {
+      setErrors({
+        ...errors,
+        emailError: "",
+        passwordError: "Password is required",
+      });
+      throw new Error("Invalid  password");
     }
 
     console.log(errors);
@@ -75,13 +87,16 @@ const SignIn = () => {
             navigate("/profile-setup");
           })
           .catch((error) => {
-            console.log(error);
+            setErrors({ ...errors, errorMsg: "Password Wrong" });
+            console.log(error.message);
           });
       } else {
+        setErrors({ ...errors, errorMsg: `${iam} not registered` });
         console.log("no " + iam + " available");
       }
     } else {
       // doc.data() will be undefined in this case
+      setErrors({ ...errors, errorMsg: "User not registered" });
       console.log("user not found !");
     }
     setProcess({ ...process, loading: false });
@@ -100,6 +115,7 @@ const SignIn = () => {
         </div>
 
         <div className="col-md-4 offset-sm-4 text-left">
+          <p className="text-warning text-center">{errorMsg}</p>
           <h3 className="text-center m-3">Login</h3>
           <div>
             I am a <b>{iam}</b>

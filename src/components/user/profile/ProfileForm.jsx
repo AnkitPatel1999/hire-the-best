@@ -4,15 +4,23 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { auth, db } from "./../../../firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import { BtnLoadingProcess } from "./../../shared/CommanComponent";
+import { useForm } from "react-hook-form";
 
 export default function ProfileForm() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
   const [stage, setStage] = useState(1);
   const [values, setValues] = useState({
     jobType: "",
     functionalArea: "",
     preferredCity: "",
     expectedSalary: "",
-    stage:1
+    stage: 1,
   });
   const [whoIam, setWhoIam] = useState("Fresher");
   const jobTypeData = ["Full Time", "Part-time", "Internship", "Freelacer"];
@@ -23,7 +31,24 @@ export default function ProfileForm() {
     "Human Resource",
     "Business Development Manager",
   ];
-
+  const [process, setProcess] = useState({
+    loadingJP: false,
+    loadingMP: false,
+    loadingHE: false,
+    loadingWE: false,
+    loadingMB: false,
+    success: false,
+    error: false,
+  });
+  const {
+    loadingJP,
+    loadingMP,
+    loadingHE,
+    loadingWE,
+    loadingMB,
+    success,
+    error,
+  } = process;
   const [docEmail, setDocEmail] = useState(null);
 
   useEffect(() => {
@@ -38,21 +63,41 @@ export default function ProfileForm() {
     });
   }, []);
 
-  const onSaveandNext = (stage) => {
-    setStage(stage);
-    console.log(typeof stage);
-    console.log(stage);
-    if (stage === 2) {
-      const jobPrefRef = doc(db, "users", docEmail);
-      setDoc(jobPrefRef, values, { merge: true })
-        .then((res) => {
-          console.log(res);
-          // navigate("/profile-setup");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
+  const onSubmit =async (data) => {
+    console.log(loadingJP);
+    setProcess({ ...process, loadingJP: true });
+    console.log(loadingJP);
+
+    console.log(data);
+    const stage = parseInt(data.stage);
+    const jobPrefRef = doc(db, "users", docEmail);
+    setDoc(jobPrefRef, data, { merge: true })
+      .then((res) => {
+        console.log(res);
+        setStage(stage);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+      console.log(loadingJP);
+
+    setProcess({ ...process, loadingJP: false });
+  };
+
+  const onSaveandNext = (stage, data) => {
+    // setProcess({ ...process, loadingJP: true });
+    // if (stage === 2) {
+    //   const jobPrefRef = doc(db, "users", docEmail);
+    //   setDoc(jobPrefRef, data, { merge: true })
+    //     .then((res) => {
+    //       console.log(res);
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+    // }
+    // setProcess({ ...process, loadingJP: false });
+    // setStage(stage);
   };
 
   const onBack = (stage) => {
@@ -70,63 +115,78 @@ export default function ProfileForm() {
       <div>
         <h4 className="mt-2">Job Preference</h4>
         <h6>What type of job are looking for?</h6>
-        <div className="form-group mt-2 mb-2">
-          <label>Job Type</label>
-          <select className="form-select" name="jobType" onChange={handleInput}>
-            <option value="">Select your job type</option>
-            {jobTypeData.map((job) => (
-              <option value={job}>{job}</option>
-            ))}
-          </select>
-        </div>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <input type="hidden" name="stage" value="1" {...register("stage")} />
+          <div className="form-group mt-2 mb-2">
+            <label>Job Type</label>
+            <select
+              className="form-select"
+              name="jobType"
+              {...register("jobType", { required: true })}
+            >
+              <option value="">Select your job type</option>
+              {jobTypeData.map((job) => (
+                <option value={job}>{job}</option>
+              ))}
+            </select>
+            <p className="text-danger">
+              {errors.jobType ? "Job Type is required" : ""}
+            </p>
+          </div>
 
-        <div className="form-group mt-2 mb-2">
-          <label>Functional Area</label>
-          <select
-            className="form-select"
-            name="functionalArea"
-            onChange={handleInput}
-          >
-            <option value="">Select your Functional Area</option>
-            {functionalAreaData.map((data) => (
-              <option value={data}>{data}</option>
-            ))}
-          </select>
-        </div>
+          <div className="form-group mt-2 mb-2">
+            <label>Functional Area</label>
+            <select
+              className="form-select"
+              name="functionalArea"
+              {...register("functionalArea", { required: true })}
+            >
+              <option value="">Select your Functional Area</option>
+              {functionalAreaData.map((data) => (
+                <option value={data}>{data}</option>
+              ))}
+            </select>
+            <p className="text-danger">
+              {errors.functionalArea ? "Functional Area is required" : ""}
+            </p>
+          </div>
 
-        <div className="form-group mt-2 mb-2">
-          <label>Preferred City</label>
-          <input
-            type="text"
-            className="form-control"
-            name="preferredCity"
-            onChange={handleInput}
-          />
-        </div>
+          <div className="form-group mt-2 mb-2">
+            <label>Preferred City</label>
+            <input
+              type="text"
+              className="form-control"
+              name="preferredCity"
+              {...register("preferredCity", { required: true })}
+            />
+            <p className="text-danger">
+              {errors.preferredCity ? "Preferred City is required" : ""}
+            </p>
+          </div>
 
-        <div className="form-group mt-2 mb-2">
-          <label>Expected Salary</label>
-          <select
-            className="form-select"
-            name="expectedSalary"
-            onChange={handleInput}
-          >
-            <option value="">Select your Expected Salary</option>
-            <option value="Rs 1 LPA">Rs 1 LPA</option>
-            <option value="Rs 2 LPA">Rs 2 LPA</option>
-            <option value="Rs 3 to 5 LPA">Rs 3 to 5 LPA</option>
-            <option value="Rs 4 to 6 LPA">Rs 4 to 6 LPA</option>
-            <option value="Rs 5 to 7 LPA">Rs 5 to 7 LPA</option>
-          </select>
-        </div>
+          <div className="form-group mt-2 mb-2">
+            <label>Expected Salary</label>
+            <select
+              className="form-select"
+              name="expectedSalary"
+              {...register("expectedSalary", { required: true })}
+            >
+              <option value="">Select your Expected Salary</option>
+              <option value="Rs 1 LPA">Rs 1 LPA</option>
+              <option value="Rs 2 LPA">Rs 2 LPA</option>
+              <option value="Rs 3 to 5 LPA">Rs 3 to 5 LPA</option>
+              <option value="Rs 4 to 6 LPA">Rs 4 to 6 LPA</option>
+              <option value="Rs 5 to 7 LPA">Rs 5 to 7 LPA</option>
+            </select>
+            <p className="text-danger">
+              {errors.expectedSalary ? "Expected Salary is required" : ""}
+            </p>
+          </div>
 
-        <button
-          type="button"
-          onClick={() => onSaveandNext(2)}
-          className="btn btn-primary mt-2 btn-block"
-        >
-          Save & Next
-        </button>
+          <button type="submit" className="btn btn-primary mt-2 btn-block">
+            <BtnLoadingProcess loading={loadingJP} btnMsg="Save & Next" />
+          </button>
+        </form>
       </div>
     );
   };
@@ -140,99 +200,118 @@ export default function ProfileForm() {
         <h6 className="mt-2 mb-2">
           Complete Profile will help you connect with more recruiters
         </h6>
-        <div className="form-group d-flex justify-content-between mt-4 mb-2">
-          <label>
-            <h6>My Profile Picture</h6>
-          </label>
-          <input type="file" className="form-control-file" />
-        </div>
-
-        <label>My Gender</label>
-        <div className="form-group d-flex">
-          <div className="form-check m-2">
-            <input
-              className="form-check-input"
-              type="radio"
-              name="gender"
-              id="male"
-              value="Male"
-              checked
-            />
-            <label className="form-check-label" for="male">
-              Male
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <input type="hidden" name="stage" value="2" {...register("stage")} />
+          <div className="form-group d-flex justify-content-between mt-4 mb-2">
+            <label>
+              <h6>My Profile Picture</h6>
             </label>
+            <input type="file" className="form-control-file" />
+            {/* {...register("profilePic", { required: true })} */}
           </div>
-          <div className="form-check m-2">
+
+          <label>My Gender</label>
+          <div className="form-group d-flex">
+            <div className="form-check m-2">
+              <input
+                className="form-check-input"
+                type="radio"
+                name="gender"
+                id="male"
+                value="Male"
+                {...register("gender", { required: true })}
+                checked
+              />
+              <label className="form-check-label" for="male">
+                Male
+              </label>
+            </div>
+            <div className="form-check m-2">
+              <input
+                className="form-check-input"
+                type="radio"
+                name="gender"
+                id="female"
+                value="Female"
+              />
+              <label className="form-check-label" for="female">
+                Female
+              </label>
+            </div>
+          </div>
+
+          <label>I am </label>
+          <div className="form-group d-flex">
+            <div className="form-check m-2">
+              <input
+                className="form-check-input"
+                type="radio"
+                name="iam"
+                id="fresher"
+                value="Fresher"
+                {...register("iam", { required: true })}
+                onChange={handleInput}
+              />
+              <label className="form-check-label" for="fresher">
+                Fresher
+              </label>
+            </div>
+            <div className="form-check m-2">
+              <input
+                className="form-check-input"
+                type="radio"
+                name="iam"
+                id="experienced"
+                value="Experienced"
+                {...register("iam", { required: true })}
+                onChange={handleInput}
+              />
+              <label className="form-check-label" for="experienced">
+                Experienced
+              </label>
+            </div>
+          </div>
+
+          <div className="form-group mt-2 mb-2">
+            <label>First Name</label>
             <input
-              className="form-check-input"
-              type="radio"
-              name="gender"
-              id="female"
-              value="Female"
+              type="text"
+              className="form-control"
+              {...register("firstName", { required: true })}
             />
-            <label className="form-check-label" for="female">
-              Female
-            </label>
           </div>
-        </div>
 
-        <label>I am </label>
-        <div className="form-group d-flex">
-          <div className="form-check m-2">
+          <div className="form-group mt-2 mb-2">
+            <label>Last Name</label>
             <input
-              className="form-check-input"
-              type="radio"
-              name="iam"
-              id="fresher"
-              value="Fresher"
-              onChange={handleInput}
+              type="text"
+              className="form-control"
+              {...register("lastName", { required: true })}
             />
-            <label className="form-check-label" for="fresher">
-              Fresher
-            </label>
           </div>
-          <div className="form-check m-2">
+
+          <div className="form-group mt-2 mb-2">
+            <label>My Email</label>
             <input
-              className="form-check-input"
-              type="radio"
-              name="iam"
-              id="experienced"
-              value="Experienced"
-              onChange={handleInput}
+              type="email"
+              className="form-control"
+              {...register("email", { required: true })}
             />
-            <label className="form-check-label" for="experienced">
-              Experienced
-            </label>
           </div>
-        </div>
 
-        <div className="form-group mt-2 mb-2">
-          <label>First Name</label>
-          <input type="text" className="form-control" />
-        </div>
+          <div className="form-group mt-2 mb-2">
+            <label>My Date of Birth</label>
+            <input
+              type="date"
+              className="form-control"
+              {...register("dateOfBirth", { required: true })}
+            />
+          </div>
 
-        <div className="form-group mt-2 mb-2">
-          <label>Last Name</label>
-          <input type="text" className="form-control" />
-        </div>
-
-        <div className="form-group mt-2 mb-2">
-          <label>My Email</label>
-          <input type="email" className="form-control" />
-        </div>
-
-        <div className="form-group mt-2 mb-2">
-          <label>My Date of Birth</label>
-          <input type="date" className="form-control" />
-        </div>
-
-        <button
-          type="button"
-          onClick={() => onSaveandNext(3)}
-          className="btn btn-primary mt-2 btn-block"
-        >
-          Save & Next
-        </button>
+          <button type="submit" className="btn btn-primary mt-2 btn-block">
+            <BtnLoadingProcess loading={loadingMP} btnMsg="Save & Next" />
+          </button>
+        </form>
       </div>
     );
   };
@@ -271,7 +350,7 @@ export default function ProfileForm() {
           onClick={() => onSaveandNext(4)}
           className="btn btn-primary mt-2 btn-block"
         >
-          Save & Next
+          <BtnLoadingProcess loading={loadingHE} btnMsg="Save & Next" />
         </button>
       </div>
     );
@@ -310,7 +389,7 @@ export default function ProfileForm() {
           onClick={() => onSaveandNext(4)}
           className="btn btn-primary mt-2 btn-block"
         >
-          Save & Next
+          <BtnLoadingProcess loading={loadingWE} btnMsg="Save & Next" />
         </button>
       </div>
     );
@@ -336,7 +415,7 @@ export default function ProfileForm() {
           onClick={() => onSaveandNext(5)}
           className="btn btn-primary mt-2 btn-block"
         >
-          Save
+          <BtnLoadingProcess loading={loadingMB} btnMsg="Save" />
         </button>
       </div>
     );
