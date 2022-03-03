@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { auth, db } from "./../../../firebase";
+import { auth, db } from "../../../firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-import { BtnLoadingProcess } from "./../../shared/CommanComponent";
+import { BtnLoadingProcess } from "../../shared/CommanComponent";
 import { useForm } from "react-hook-form";
+import { Navigate } from "react-router-dom";
 
 export default function ProfileForm() {
   const {
@@ -136,8 +137,6 @@ export default function ProfileForm() {
     console.log(data);
     await onSaveandNext(stageRef, data);
   };
-  
-  
 
   const onSaveandNext = (stageRef, data) => {
     const jobPrefRef = doc(db, "users", docEmail);
@@ -259,7 +258,12 @@ export default function ProfileForm() {
           Complete Profile will help you connect with more recruiters
         </h6>
         <form onSubmit={handleSubmitMP(onSubmitMyProfile)}>
-          <input type="hidden" name="stage" value="3" {...registerMP("stage")} />
+          <input
+            type="hidden"
+            name="stage"
+            value="3"
+            {...registerMP("stage")}
+          />
           <div className="form-group d-flex justify-content-between mt-4 mb-2">
             <label>
               <h6>My Profile Picture</h6>
@@ -442,7 +446,12 @@ export default function ProfileForm() {
         </div>
         <h5 className="mt-2">Work Experience</h5>
         <form onSubmit={handleSubmitWE(onSubmitWorkExperience)}>
-          <input type="hidden" name="stage" value="4" {...registerWE("stage")} />
+          <input
+            type="hidden"
+            name="stage"
+            value="4"
+            {...registerWE("stage")}
+          />
           <div className="form-group mt-2 mb-2">
             <label>Company Name</label>
             <input
@@ -495,18 +504,24 @@ export default function ProfileForm() {
         </div>
         <h5 className="mt-2">The Last Step!</h5>
         <form onSubmit={handleSubmitMB(onSubmitMyBio)}>
-          <input type="hidden" name="stage" value="5" {...registerMB("stage")} />
+          <input
+            type="hidden"
+            name="stage"
+            value="5"
+            {...registerMB("stage")}
+          />
           <div className="form-group mt-2 mb-2">
             <label>
               <h4>My Bio</h4>
             </label>
-            <textarea rows="4" className="form-control mt-3" {...registerMB("MyBio")}/>
+            <textarea
+              rows="4"
+              className="form-control mt-3"
+              {...registerMB("MyBio")}
+            />
           </div>
 
-          <button
-            type="submit"
-            className="btn btn-primary mt-2 btn-block"
-          >
+          <button type="submit" className="btn btn-primary mt-2 btn-block">
             <BtnLoadingProcess loading={loadingMB} btnMsg="Save" />
           </button>
         </form>
@@ -516,7 +531,6 @@ export default function ProfileForm() {
 
   return (
     <div className="col-md-4 offset-sm-4 text-left">
-      {stage}
       {stage === 1 ? jobPreference() : ""}
       {stage === 2 ? myProfile() : ""}
       {stage === 3
@@ -525,7 +539,13 @@ export default function ProfileForm() {
           : workExperience()
         : ""}
       {stage === 4 ? myBio() : ""}
-      {stage === 5 ? <h4>All Done</h4> : ""}
+      {stage === 5 ? (
+        <h4>
+          <Navigate to="/profile" />
+        </h4>
+      ) : (
+        ""
+      )}
     </div>
   );
 }

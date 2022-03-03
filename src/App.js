@@ -6,6 +6,7 @@ import SignUp from './components/user/SignUp'
 import ForgotPassword from './components/user/ForgotPassword'
 import Header from './components/home/Header'
 import ProfileForm from './components/user/profileForm/ProfileForm'
+import Profile from './components/user/profile/Profile'
 import Job from './components/user/jobs/Job'
 
 // import Home from './components/home/Home'
@@ -36,6 +37,7 @@ function App() {
           <Route path="signup" element={<SignUp />} />
           <Route path="forgot-password" element={<ForgotPassword />} />
           <Route path="profile-setup" element={<ProfileForm />} />
+          <Route path="profile" element={<Profile />} />
         </Routes>
       </BrowserRouter>
     </div>

@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import "./Header.css";
 import { auth } from "./../../firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
-import { Link , useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import profilePic from "../../../src/assets/profilepic.png";
 
 export default function Header() {
   const [user, setUser] = useState(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -23,12 +24,18 @@ export default function Header() {
     signOut(auth)
       .then((res) => {
         console.log(res);
-        navigate('/signin')
+        navigate("/signin");
       })
       .catch((error) => {
         console.log(error);
       });
   };
+
+  // const goToProfile = () => {
+  //   console.log("goToProfile")
+  //   navigate("/profile");
+  // };
+
   return (
     <div>
       <div className="container-fluid">
@@ -36,11 +43,19 @@ export default function Header() {
           <Link to="/">
             <h3>Hire The Best</h3>
           </Link>
-          {user ? (
-            <h6 onClick={onSignout}>Sign Out</h6>
-          ) : (
-            <Link to="/signin">Sign In</Link>
-          )}
+          <div className="leftContainer">
+            {user ? (
+              <>
+                <div className="profile" onClick={() => navigate("/profile")}>
+                  <img src={profilePic} width="50" alt="profilePic" />
+                  <span>Ankit Patel</span>
+                </div>
+                <h6 onClick={onSignout}>Sign Out</h6>
+              </>
+            ) : (
+              <Link to="/signin">Sign In</Link>
+            )}
+          </div>
         </div>
       </div>
     </div>
