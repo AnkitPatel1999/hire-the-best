@@ -26,3 +26,5 @@ export function BtnLoadingProcess({ loading, btnMsg }) {
       </div>
     );
   }
+
+  // validate: (input) => isEmail(input)

@@ -53,6 +53,7 @@ const SignUp = () => {
             email: email,
             password: password,
             role: iam,
+            stage:1
           })
             .then((res) => {
               console.log(res);

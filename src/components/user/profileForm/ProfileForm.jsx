@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { auth, db } from "./../../../firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { BtnLoadingProcess } from "./../../shared/CommanComponent";
 import { useForm } from "react-hook-form";
@@ -10,10 +10,37 @@ import { useForm } from "react-hook-form";
 export default function ProfileForm() {
   const {
     register,
+    reset,
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const {
+    register: registerJP,
+    handleSubmit: handleSubmitJP,
+    formState: { errorsJP },
+  } = useForm();
 
+  const {
+    register: registerMP,
+    handleSubmit: handleSubmitMP,
+    formState: { errorsMP },
+  } = useForm();
+
+  const {
+    register: registerHE,
+    handleSubmit: handleSubmitHE,
+    formState: { errorsHE },
+  } = useForm();
+  const {
+    register: registerWE,
+    handleSubmit: handleSubmitWE,
+    formState: { errorsWE },
+  } = useForm();
+  const {
+    register: registerMB,
+    handleSubmit: handleSubmitMB,
+    formState: { errorsMB },
+  } = useForm();
   const [stage, setStage] = useState(1);
   const [values, setValues] = useState({
     jobType: "",
@@ -56,6 +83,7 @@ export default function ProfileForm() {
       if (user) {
         setDocEmail(user.email);
         console.log("user = " + user.email);
+        getUserByEmail(user.email);
       } else {
         setDocEmail(null);
         console.log("user = " + user);
@@ -63,41 +91,67 @@ export default function ProfileForm() {
     });
   }, []);
 
-  const onSubmit =async (data) => {
-    console.log(loadingJP);
-    setProcess({ ...process, loadingJP: true });
-    console.log(loadingJP);
+  const getUserByEmail = async (email) => {
+    const userRef = doc(db, "users", email);
+    const docSnap = await getDoc(userRef);
+    console.log(docSnap.data());
 
+    setStage(parseInt(docSnap.data().stage));
+    setWhoIam(docSnap.data().iam);
+  };
+
+  // useEffect(() => {
+  //   // setWhoIam(1)
+
+  // }, [whoIam]);
+
+  const onSubmit = async (data) => {
+    const stageRef = parseInt(data.stage);
+    console.log(stageRef);
     console.log(data);
-    const stage = parseInt(data.stage);
+    await onSaveandNext(stageRef, data);
+  };
+
+  const onSubmitMyProfile = async (data) => {
+    const stageRef = parseInt(data.stage);
+    console.log(stageRef);
+    console.log(data);
+    await onSaveandNext(stageRef, data);
+  };
+  const onSubmitHighestEducation = async (data) => {
+    const stageRef = parseInt(data.stage);
+    console.log(stageRef);
+    console.log(data);
+    await onSaveandNext(stageRef, data);
+  };
+  const onSubmitWorkExperience = async (data) => {
+    const stageRef = parseInt(data.stage);
+    console.log(stageRef);
+    console.log(data);
+    await onSaveandNext(stageRef, data);
+  };
+  const onSubmitMyBio = async (data) => {
+    const stageRef = parseInt(data.stage);
+    console.log(stageRef);
+    console.log(data);
+    await onSaveandNext(stageRef, data);
+  };
+  
+  
+
+  const onSaveandNext = (stageRef, data) => {
     const jobPrefRef = doc(db, "users", docEmail);
     setDoc(jobPrefRef, data, { merge: true })
       .then((res) => {
         console.log(res);
-        setStage(stage);
+        setStage(stageRef);
+        console.log(stage);
       })
       .catch((error) => {
         console.log(error);
       });
-      console.log(loadingJP);
-
-    setProcess({ ...process, loadingJP: false });
-  };
-
-  const onSaveandNext = (stage, data) => {
-    // setProcess({ ...process, loadingJP: true });
-    // if (stage === 2) {
-    //   const jobPrefRef = doc(db, "users", docEmail);
-    //   setDoc(jobPrefRef, data, { merge: true })
-    //     .then((res) => {
-    //       console.log(res);
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // }
-    // setProcess({ ...process, loadingJP: false });
-    // setStage(stage);
+    reset();
+    return;
   };
 
   const onBack = (stage) => {
@@ -106,7 +160,7 @@ export default function ProfileForm() {
 
   const handleInput = (e) => {
     console.log(e.target.value);
-    // setWhoIam(e.target.value);
+    setWhoIam(e.target.value);
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
@@ -115,14 +169,19 @@ export default function ProfileForm() {
       <div>
         <h4 className="mt-2">Job Preference</h4>
         <h6>What type of job are looking for?</h6>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <input type="hidden" name="stage" value="1" {...register("stage")} />
+        <form onSubmit={handleSubmitJP(onSubmit)}>
+          <input
+            type="hidden"
+            name="stage"
+            value="2"
+            {...registerJP("stage")}
+          />
           <div className="form-group mt-2 mb-2">
             <label>Job Type</label>
             <select
               className="form-select"
               name="jobType"
-              {...register("jobType", { required: true })}
+              {...registerJP("jobType", { required: true })}
             >
               <option value="">Select your job type</option>
               {jobTypeData.map((job) => (
@@ -139,7 +198,7 @@ export default function ProfileForm() {
             <select
               className="form-select"
               name="functionalArea"
-              {...register("functionalArea", { required: true })}
+              {...registerJP("functionalArea", { required: true })}
             >
               <option value="">Select your Functional Area</option>
               {functionalAreaData.map((data) => (
@@ -157,7 +216,7 @@ export default function ProfileForm() {
               type="text"
               className="form-control"
               name="preferredCity"
-              {...register("preferredCity", { required: true })}
+              {...registerJP("preferredCity", { required: true })}
             />
             <p className="text-danger">
               {errors.preferredCity ? "Preferred City is required" : ""}
@@ -169,7 +228,7 @@ export default function ProfileForm() {
             <select
               className="form-select"
               name="expectedSalary"
-              {...register("expectedSalary", { required: true })}
+              {...registerJP("expectedSalary", { required: true })}
             >
               <option value="">Select your Expected Salary</option>
               <option value="Rs 1 LPA">Rs 1 LPA</option>
@@ -182,7 +241,6 @@ export default function ProfileForm() {
               {errors.expectedSalary ? "Expected Salary is required" : ""}
             </p>
           </div>
-
           <button type="submit" className="btn btn-primary mt-2 btn-block">
             <BtnLoadingProcess loading={loadingJP} btnMsg="Save & Next" />
           </button>
@@ -200,8 +258,8 @@ export default function ProfileForm() {
         <h6 className="mt-2 mb-2">
           Complete Profile will help you connect with more recruiters
         </h6>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <input type="hidden" name="stage" value="2" {...register("stage")} />
+        <form onSubmit={handleSubmitMP(onSubmitMyProfile)}>
+          <input type="hidden" name="stage" value="3" {...registerMP("stage")} />
           <div className="form-group d-flex justify-content-between mt-4 mb-2">
             <label>
               <h6>My Profile Picture</h6>
@@ -219,7 +277,7 @@ export default function ProfileForm() {
                 name="gender"
                 id="male"
                 value="Male"
-                {...register("gender", { required: true })}
+                {...registerMP("gender", { required: true })}
                 checked
               />
               <label className="form-check-label" for="male">
@@ -249,7 +307,7 @@ export default function ProfileForm() {
                 name="iam"
                 id="fresher"
                 value="Fresher"
-                {...register("iam", { required: true })}
+                {...registerMP("iam", { required: true })}
                 onChange={handleInput}
               />
               <label className="form-check-label" for="fresher">
@@ -263,7 +321,7 @@ export default function ProfileForm() {
                 name="iam"
                 id="experienced"
                 value="Experienced"
-                {...register("iam", { required: true })}
+                {...registerMP("iam", { required: true })}
                 onChange={handleInput}
               />
               <label className="form-check-label" for="experienced">
@@ -277,7 +335,7 @@ export default function ProfileForm() {
             <input
               type="text"
               className="form-control"
-              {...register("firstName", { required: true })}
+              {...registerMP("firstName", { required: true })}
             />
           </div>
 
@@ -286,7 +344,7 @@ export default function ProfileForm() {
             <input
               type="text"
               className="form-control"
-              {...register("lastName", { required: true })}
+              {...registerMP("lastName", { required: true })}
             />
           </div>
 
@@ -295,7 +353,7 @@ export default function ProfileForm() {
             <input
               type="email"
               className="form-control"
-              {...register("email", { required: true })}
+              {...registerMP("email", { required: true })}
             />
           </div>
 
@@ -304,7 +362,7 @@ export default function ProfileForm() {
             <input
               type="date"
               className="form-control"
-              {...register("dateOfBirth", { required: true })}
+              {...registerMP("dateOfBirth", { required: true })}
             />
           </div>
 
@@ -324,34 +382,54 @@ export default function ProfileForm() {
         </div>
         <h5 className="mt-2">Highest Education</h5>
         <b>Please fill in your highest education details</b>
+        <form onSubmit={handleSubmitHE(onSubmitHighestEducation)}>
+          <input
+            type="hidden"
+            name="stage"
+            value="4"
+            {...registerHE("stage")}
+          />
 
-        <div className="form-group mt-2 mb-2">
-          <label>Institute Name</label>
-          <input type="text" className="form-control" />
-        </div>
+          <div className="form-group mt-2 mb-2">
+            <label>Institute Name</label>
+            <input
+              type="text"
+              {...registerHE("instituteName", { required: true })}
+              className="form-control"
+            />
+          </div>
 
-        <div className="form-group mt-2 mb-2">
-          <label>Education Level and Degree</label>
-          <input type="text" className="form-control" />
-        </div>
+          <div className="form-group mt-2 mb-2">
+            <label>Education Level and Degree</label>
+            <input
+              type="text"
+              {...registerHE("degree", { required: true })}
+              className="form-control"
+            />
+          </div>
 
-        <div className="form-group mt-2 mb-2">
-          <label>Field of Study</label>
-          <input type="text" className="form-control" />
-        </div>
+          <div className="form-group mt-2 mb-2">
+            <label>Field of Study</label>
+            <input
+              type="text"
+              {...registerHE("fieldOfStudy", { required: true })}
+              className="form-control"
+            />
+          </div>
 
-        <div className="form-group mt-2 mb-2">
-          <label>Start & End Time</label>
-          <input type="text" className="form-control" />
-        </div>
+          <div className="form-group mt-2 mb-2">
+            <label>Start & End Time</label>
+            <input
+              type="text"
+              {...registerHE("startEndTime", { required: true })}
+              className="form-control"
+            />
+          </div>
 
-        <button
-          type="button"
-          onClick={() => onSaveandNext(4)}
-          className="btn btn-primary mt-2 btn-block"
-        >
-          <BtnLoadingProcess loading={loadingHE} btnMsg="Save & Next" />
-        </button>
+          <button type="submit" className="btn btn-primary mt-2 btn-block">
+            <BtnLoadingProcess loading={loadingHE} btnMsg="Save & Next" />
+          </button>
+        </form>
       </div>
     );
   };
@@ -363,34 +441,48 @@ export default function ProfileForm() {
           <FontAwesomeIcon className="onBack" icon={faArrowLeft} />
         </div>
         <h5 className="mt-2">Work Experience</h5>
+        <form onSubmit={handleSubmitWE(onSubmitWorkExperience)}>
+          <input type="hidden" name="stage" value="4" {...registerWE("stage")} />
+          <div className="form-group mt-2 mb-2">
+            <label>Company Name</label>
+            <input
+              type="text"
+              className="form-control"
+              {...registerWE("companyName")}
+            />
+          </div>
 
-        <div className="form-group mt-2 mb-2">
-          <label>Company Name</label>
-          <input type="text" className="form-control" />
-        </div>
+          <div className="form-group mt-2 mb-2">
+            <label>Start & End Date</label>
+            <input
+              type="text"
+              className="form-control"
+              {...registerWE("startEndDate")}
+            />
+          </div>
 
-        <div className="form-group mt-2 mb-2">
-          <label>Start & End Date</label>
-          <input type="text" className="form-control" />
-        </div>
+          <div className="form-group mt-2 mb-2">
+            <label>My Designation</label>
+            <input
+              type="text"
+              className="form-control"
+              {...registerWE("designation")}
+            />
+          </div>
 
-        <div className="form-group mt-2 mb-2">
-          <label>My Designation</label>
-          <input type="text" className="form-control" />
-        </div>
+          <div className="form-group mt-2 mb-2">
+            <label>Role & Responsibility</label>
+            <input
+              type="text"
+              className="form-control"
+              {...registerWE("roleAndResponsibilty")}
+            />
+          </div>
 
-        <div className="form-group mt-2 mb-2">
-          <label>Role & Responsibility</label>
-          <input type="text" className="form-control" />
-        </div>
-
-        <button
-          type="button"
-          onClick={() => onSaveandNext(4)}
-          className="btn btn-primary mt-2 btn-block"
-        >
-          <BtnLoadingProcess loading={loadingWE} btnMsg="Save & Next" />
-        </button>
+          <button type="submit" className="btn btn-primary mt-2 btn-block">
+            <BtnLoadingProcess loading={loadingWE} btnMsg="Save & Next" />
+          </button>
+        </form>
       </div>
     );
   };
@@ -402,27 +494,29 @@ export default function ProfileForm() {
           <FontAwesomeIcon className="onBack" icon={faArrowLeft} />
         </div>
         <h5 className="mt-2">The Last Step!</h5>
+        <form onSubmit={handleSubmitMB(onSubmitMyBio)}>
+          <input type="hidden" name="stage" value="5" {...registerMB("stage")} />
+          <div className="form-group mt-2 mb-2">
+            <label>
+              <h4>My Bio</h4>
+            </label>
+            <textarea rows="4" className="form-control mt-3" {...registerMB("MyBio")}/>
+          </div>
 
-        <div className="form-group mt-2 mb-2">
-          <label>
-            <h4>My Bio</h4>
-          </label>
-          <textarea rows="4" className="form-control mt-3" />
-        </div>
-
-        <button
-          type="button"
-          onClick={() => onSaveandNext(5)}
-          className="btn btn-primary mt-2 btn-block"
-        >
-          <BtnLoadingProcess loading={loadingMB} btnMsg="Save" />
-        </button>
+          <button
+            type="submit"
+            className="btn btn-primary mt-2 btn-block"
+          >
+            <BtnLoadingProcess loading={loadingMB} btnMsg="Save" />
+          </button>
+        </form>
       </div>
     );
   };
 
   return (
     <div className="col-md-4 offset-sm-4 text-left">
+      {stage}
       {stage === 1 ? jobPreference() : ""}
       {stage === 2 ? myProfile() : ""}
       {stage === 3

@@ -5,7 +5,7 @@ import SignIn from './components/user/SignIn'
 import SignUp from './components/user/SignUp'
 import ForgotPassword from './components/user/ForgotPassword'
 import Header from './components/home/Header'
-import ProfileForm from './components/user/profile/ProfileForm'
+import ProfileForm from './components/user/profileForm/ProfileForm'
 import Job from './components/user/jobs/Job'
 
 // import Home from './components/home/Home'
