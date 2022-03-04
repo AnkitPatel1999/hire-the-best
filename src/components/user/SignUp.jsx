@@ -22,9 +22,6 @@ const SignUp = () => {
   const [iam, setIam] = useState(null);
   const { email, password, confirmPassword } = userData;
 
-  useEffect(() => {
-    console.log(db);
-  });
   const handleInput = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };

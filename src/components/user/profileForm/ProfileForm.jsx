@@ -13,34 +13,34 @@ export default function ProfileForm() {
     register,
     reset,
     handleSubmit,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
   const {
     register: registerJP,
     handleSubmit: handleSubmitJP,
-    formState: { errorsJP },
+    formState: { errorsJP }
   } = useForm();
 
   const {
     register: registerMP,
     handleSubmit: handleSubmitMP,
-    formState: { errorsMP },
+    formState: { errorsMP }
   } = useForm();
 
   const {
     register: registerHE,
     handleSubmit: handleSubmitHE,
-    formState: { errorsHE },
+    formState: { errorsHE }
   } = useForm();
   const {
     register: registerWE,
     handleSubmit: handleSubmitWE,
-    formState: { errorsWE },
+    formState: { errorsWE }
   } = useForm();
   const {
     register: registerMB,
     handleSubmit: handleSubmitMB,
-    formState: { errorsMB },
+    formState: { errorsMB }
   } = useForm();
   const [stage, setStage] = useState(1);
   const [values, setValues] = useState({
@@ -48,7 +48,7 @@ export default function ProfileForm() {
     functionalArea: "",
     preferredCity: "",
     expectedSalary: "",
-    stage: 1,
+    stage: 1
   });
   const [whoIam, setWhoIam] = useState("Fresher");
   const jobTypeData = ["Full Time", "Part-time", "Internship", "Freelacer"];
@@ -57,7 +57,7 @@ export default function ProfileForm() {
     "Data Entry",
     "Accoutant",
     "Human Resource",
-    "Business Development Manager",
+    "Business Development Manager"
   ];
   const [process, setProcess] = useState({
     loadingJP: false,
@@ -66,7 +66,7 @@ export default function ProfileForm() {
     loadingWE: false,
     loadingMB: false,
     success: false,
-    error: false,
+    error: false
   });
   const {
     loadingJP,
@@ -75,7 +75,7 @@ export default function ProfileForm() {
     loadingWE,
     loadingMB,
     success,
-    error,
+    error
   } = process;
   const [docEmail, setDocEmail] = useState(null);
 
@@ -163,7 +163,7 @@ export default function ProfileForm() {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
-  const jobPreference = () => {
+  const jobPreference = (stage) => {
     return (
       <div>
         <h4 className="mt-2">Job Preference</h4>
@@ -172,7 +172,7 @@ export default function ProfileForm() {
           <input
             type="hidden"
             name="stage"
-            value="2"
+            value={stage}
             {...registerJP("stage")}
           />
           <div className="form-group mt-2 mb-2">
@@ -248,7 +248,9 @@ export default function ProfileForm() {
     );
   };
 
-  const myProfile = () => {
+  const myProfile = (stage) => {
+    console.log(stage)
+    console.log(errorsMP)
     return (
       <div>
         <div onClick={() => onBack(1)} className="onProfileBackIcon">
@@ -261,7 +263,7 @@ export default function ProfileForm() {
           <input
             type="hidden"
             name="stage"
-            value="3"
+            value={stage}
             {...registerMP("stage")}
           />
           <div className="form-group d-flex justify-content-between mt-4 mb-2">
@@ -378,7 +380,7 @@ export default function ProfileForm() {
     );
   };
 
-  const highestEducation = () => {
+  const highestEducation = (stage) => {
     return (
       <div>
         <div onClick={() => onBack(2)} className="onProfileBackIcon">
@@ -390,7 +392,7 @@ export default function ProfileForm() {
           <input
             type="hidden"
             name="stage"
-            value="4"
+            value={stage}
             {...registerHE("stage")}
           />
 
@@ -438,7 +440,7 @@ export default function ProfileForm() {
     );
   };
 
-  const workExperience = () => {
+  const workExperience = (stage) => {
     return (
       <div>
         <div onClick={() => onBack(2)} className="onProfileBackIcon">
@@ -449,7 +451,7 @@ export default function ProfileForm() {
           <input
             type="hidden"
             name="stage"
-            value="4"
+            value={stage}
             {...registerWE("stage")}
           />
           <div className="form-group mt-2 mb-2">
@@ -496,7 +498,7 @@ export default function ProfileForm() {
     );
   };
 
-  const myBio = () => {
+  const myBio = (stage) => {
     return (
       <div>
         <div onClick={() => onBack(3)} className="onProfileBackIcon">
@@ -507,7 +509,7 @@ export default function ProfileForm() {
           <input
             type="hidden"
             name="stage"
-            value="5"
+            value={stage}
             {...registerMB("stage")}
           />
           <div className="form-group mt-2 mb-2">
@@ -531,15 +533,14 @@ export default function ProfileForm() {
 
   return (
     <div className="col-md-4 offset-sm-4 text-left">
-      {stage === 1 ? jobPreference() : ""}
-      {stage === 2 ? myProfile() : ""}
-      {stage === 3
-        ? whoIam === "Fresher"
-          ? highestEducation()
-          : workExperience()
-        : ""}
-      {stage === 4 ? myBio() : ""}
-      {stage === 5 ? (
+      {stage === 1 ? jobPreference(2) : ""}
+      {stage === 2 ? myProfile(3) : ""}
+      {stage === 3 && whoIam === "Fresher" ? highestEducation(5) : ""}
+      {stage === 3 && whoIam === "Experienced" ? highestEducation(4) : ""}
+      {stage === 4 && whoIam === "Experienced" ? workExperience(5) : ""}
+
+      {stage === 5 ? myBio(6) : ""}
+      {stage === 6 ? (
         <h4>
           <Navigate to="/profile" />
         </h4>

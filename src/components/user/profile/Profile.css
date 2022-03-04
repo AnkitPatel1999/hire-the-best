@@ -10,6 +10,15 @@
   width: 50%;
   margin: auto;
 }
-.profilePicUp{
-    text-align: right;
+.profilePicUp {
+  text-align: right;
+}
+
+.mybio {
+  margin-top: 10px;
+  padding: 20px 0px 20px 0px;
+  border-bottom: 1px solid darkblue;
+}
+.text-right{
+  text-align: right;
 }

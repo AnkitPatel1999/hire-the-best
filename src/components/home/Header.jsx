@@ -48,7 +48,7 @@ export default function Header() {
               <>
                 <div className="profile" onClick={() => navigate("/profile")}>
                   <img src={profilePic} width="50" alt="profilePic" />
-                  <span>Ankit Patel</span>
+                  <span>{user}</span>
                 </div>
                 <h6 onClick={onSignout}>Sign Out</h6>
               </>
