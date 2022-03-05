@@ -8,6 +8,7 @@ import Header from './components/home/Header'
 import ProfileForm from './components/user/profileForm/ProfileForm'
 import Profile from './components/user/profile/Profile'
 import Job from './components/user/jobs/Job'
+import RecruiterForm from './components/recruiter/recruiterForm/RecruiterForm'
 
 // import Home from './components/home/Home'
 import { auth } from "./firebase";
@@ -39,6 +40,9 @@ function App() {
           <Route path="forgot-password" element={<ForgotPassword />} />
           <Route path="profile-setup" element={<ProfileForm />} />
           <Route path="profile" element={<Profile />} />
+
+          <Route path="recruiter-profile-setup" element={<RecruiterForm />} />
+
         </Routes>
       </BrowserRouter>
     </div>
