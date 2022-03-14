@@ -9,7 +9,7 @@ import ProfileForm from './components/user/profileForm/ProfileForm'
 import Profile from './components/user/profile/Profile'
 import Job from './components/user/jobs/Job'
 import RecruiterForm from './components/recruiter/recruiterForm/RecruiterForm'
-
+import PostJob from './components/recruiter/PostJob'
 // import Home from './components/home/Home'
 import { auth } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -20,10 +20,10 @@ function App() {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user.email);
-        console.log("user = " + user.email);
+        // console.log("user = " + user.email);
       } else {
         setUser(null);
-        console.log("user = " + user);
+        // console.log("user = " + user);
       }
     });
   }, []);
@@ -42,6 +42,7 @@ function App() {
           <Route path="profile" element={<Profile />} />
 
           <Route path="recruiter-profile-setup" element={<RecruiterForm />} />
+          <Route path="post-job" element={<PostJob />} />
 
         </Routes>
       </BrowserRouter>

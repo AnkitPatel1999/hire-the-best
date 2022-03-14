@@ -34,7 +34,6 @@ a {
   border-radius: 50%;
 }
 
-
 .onProfileBackIcon {
   position: absolute;
   margin-left: -70px;
@@ -48,7 +47,7 @@ a {
 /* .spinner {
   animation: spin infinite 5s linear; */
 
-  /*You can increase or decrease the timer (5s) to 
+/*You can increase or decrease the timer (5s) to 
    increase or decrease the speed of the spinner*/
 /* }
 
@@ -60,3 +59,9 @@ to {
   transform: rotate(360deg);
 }
 } */
+
+.jobReq {
+  border: 1px solid skyblue;
+  padding: 10px;
+  border-radius: 5px;
+}

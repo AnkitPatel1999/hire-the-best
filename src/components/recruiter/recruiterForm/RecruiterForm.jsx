@@ -3,65 +3,104 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { auth, db } from "../../../firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
 import { BtnLoadingProcess } from "../../shared/CommanComponent";
 import { useForm } from "react-hook-form";
-import { Navigate } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 const RecruiterForm = () => {
+  let navigate = useNavigate();
+
   const {
     register: registerMP,
     handleSubmit: handleSubmitMP,
-    reset,
+    reset: resetMP,
     formState: { errorsMP }
   } = useForm();
+
+  const {
+    register: registerRC,
+    handleSubmit: handleSubmitRC,
+    reset: resetRC,
+    formState: { errorsRC }
+  } = useForm();
+
   const [stage, setStage] = useState(1);
-  const [whoIam, setWhoIam] = useState("Fresher");
-  const [values, setValues] = useState({});
   const [docEmail, setDocEmail] = useState(null);
+  const [companyName, setCompanyName] = useState();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setDocEmail(user.email);
+        console.log("user = " + user.email);
+        getUserByEmail(user.email);
+      } else {
+        setDocEmail(null);
+        console.log("user = " + user);
+      }
+    });
+  }, []);
+
+  const getUserByEmail = async (email) => {
+    const userRef = doc(db, "recruiter", email);
+    const docSnap = await getDoc(userRef);
+    console.log(docSnap.data());
+    console.log(docSnap.data().company.stage);
+
+    setStage(parseInt(docSnap.data().company.stage));
+  };
 
   const onSubmitMyProfile = async (data) => {
     const stageRef = parseInt(data.stage);
     console.log(stageRef);
     console.log(data);
-    await onSaveandNext(stageRef, data);
+    await onSaveandNext(stageRef, data, "myProfile");
   };
 
-  const onSaveandNext = (stageRef, data) => {
-    const jobPrefRef = doc(db, "users", docEmail);
-    setDoc(jobPrefRef, data, { merge: true })
-      .then((res) => {
-        console.log(res);
+  const onSubmitRegisterCompany = async (data) => {
+    const stageRef = parseInt(data.stage);
+    console.log(stageRef);
+    console.log(data);
+    setCompanyName(data.fullName);
+    console.log(data.fullName);
+    await onSaveandNext(stageRef, data, "company");
+  };
+
+  const onSaveandNext = (stageRef, data, type) => {
+    console.log(type);
+    const collectionRef = doc(db, "recruiter", docEmail);
+    setDoc(collectionRef, { [type]: data }, { merge: true })
+      .then(() => {
         setStage(stageRef);
-        console.log(stage);
       })
       .catch((error) => {
         console.log(error);
       });
-    reset();
+
+    if (type == "myProfile") {
+      resetMP();
+      navigate("/post-job");
+      console.log("resetMP");
+    } else if (type == "company") {
+      resetRC();
+      console.log("resetRC");
+    }
     return;
   };
 
   const onBack = (stage) => {
     setStage(stage);
   };
-  const handleInput = (e) => {
-    console.log(e.target.value);
-    setWhoIam(e.target.value);
-    setValues({ ...values, [e.target.name]: e.target.value });
-  };
 
   const myProfile = (stage) => {
-    console.log(stage);
-    console.log(errorsMP);
     return (
       <div>
         <div onClick={() => onBack(1)} className="onProfileBackIcon">
           <FontAwesomeIcon className="onBack" icon={faArrowLeft} />
         </div>
-        <h6 className="mt-2 mb-2">
-          Complete Profile will help you connect with more recruiters
-        </h6>
+        <h5 className="mt-2">My Recruiter Profile</h5>
+        <h6 className="mt-2 mb-2">Introduce yourself to the candidates</h6>
         <form onSubmit={handleSubmitMP(onSubmitMyProfile)}>
           <input
             type="hidden"
@@ -75,68 +114,6 @@ const RecruiterForm = () => {
             </label>
             <input type="file" className="form-control-file" />
             {/* {...register("profilePic", { required: true })} */}
-          </div>
-
-          <label>My Gender</label>
-          <div className="form-group d-flex">
-            <div className="form-check m-2">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="gender"
-                id="male"
-                value="Male"
-                {...registerMP("gender", { required: true })}
-                checked
-              />
-              <label className="form-check-label" for="male">
-                Male
-              </label>
-            </div>
-            <div className="form-check m-2">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="gender"
-                id="female"
-                value="Female"
-              />
-              <label className="form-check-label" for="female">
-                Female
-              </label>
-            </div>
-          </div>
-
-          <label>I am </label>
-          <div className="form-group d-flex">
-            <div className="form-check m-2">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="iam"
-                id="fresher"
-                value="Fresher"
-                {...registerMP("iam", { required: true })}
-                onChange={handleInput}
-              />
-              <label className="form-check-label" for="fresher">
-                Fresher
-              </label>
-            </div>
-            <div className="form-check m-2">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="iam"
-                id="experienced"
-                value="Experienced"
-                {...registerMP("iam", { required: true })}
-                onChange={handleInput}
-              />
-              <label className="form-check-label" for="experienced">
-                Experienced
-              </label>
-            </div>
           </div>
 
           <div className="form-group mt-2 mb-2">
@@ -158,20 +135,30 @@ const RecruiterForm = () => {
           </div>
 
           <div className="form-group mt-2 mb-2">
+            <label>My Company Name</label>
+            <input
+              type="text"
+              className="form-control"
+              value={companyName}
+              {...registerMP("companyName", { required: true })}
+            />
+          </div>
+
+          <div className="form-group mt-2 mb-2">
+            <label>Designation</label>
+            <input
+              type="text"
+              className="form-control"
+              {...registerMP("designation", { required: true })}
+            />
+          </div>
+
+          <div className="form-group mt-2 mb-2">
             <label>My Email</label>
             <input
               type="email"
               className="form-control"
               {...registerMP("email", { required: true })}
-            />
-          </div>
-
-          <div className="form-group mt-2 mb-2">
-            <label>My Date of Birth</label>
-            <input
-              type="date"
-              className="form-control"
-              {...registerMP("dateOfBirth", { required: true })}
             />
           </div>
 
@@ -182,7 +169,93 @@ const RecruiterForm = () => {
       </div>
     );
   };
-  return <>{myProfile(1)}</>;
+
+  const registerCompany = (stage) => {
+    return (
+      <div>
+        <div onClick={() => onBack(1)} className="onProfileBackIcon">
+          <FontAwesomeIcon className="onBack" icon={faArrowLeft} />
+        </div>
+        <h5 className="mt-2">Register a Company</h5>
+        <h6 className="mt-2 mb-2">Introduce your company to candidates</h6>
+        <form onSubmit={handleSubmitRC(onSubmitRegisterCompany)}>
+          <input
+            type="hidden"
+            name="stage"
+            value={stage}
+            {...registerRC("stage")}
+          />
+
+          <div className="form-group mt-2 mb-2">
+            <label>Company Full Name</label>
+            <input
+              type="text"
+              className="form-control"
+              {...registerRC("fullName", { required: true })}
+            />
+          </div>
+
+          <div className="form-group mt-2 mb-2">
+            <label>Company Short Name</label>
+            <input
+              type="text"
+              className="form-control"
+              {...registerRC("shortName", { required: true })}
+            />
+          </div>
+
+          <div className="form-group mt-2 mb-2">
+            <label>Industry</label>
+            <input
+              type="text"
+              className="form-control"
+              {...registerRC("industry", { required: true })}
+            />
+          </div>
+
+          <div className="form-group mt-2 mb-2">
+            <label>Company Size</label>
+            <input
+              type="text"
+              className="form-control"
+              {...registerRC("size", { required: true })}
+            />
+          </div>
+
+          <div className="form-group mt-2 mb-2">
+            <label>Company Location</label>
+            <input
+              type="text"
+              className="form-control"
+              {...registerRC("location", { required: true })}
+            />
+          </div>
+
+          <div className="form-group mt-2 mb-2">
+            <label>Company Website</label>
+            <input
+              type="text"
+              className="form-control"
+              {...registerRC("website", { required: true })}
+            />
+          </div>
+
+          <button type="submit" className="btn btn-primary mt-2 btn-block">
+            <BtnLoadingProcess loading={false} btnMsg="Save & Next" />
+          </button>
+        </form>
+      </div>
+    );
+  };
+
+  return (
+    <>
+      <div className="col-md-4 offset-sm-4 text-left">
+        {stage === 1 ? registerCompany(2) : ""}
+        {stage === 2 ? myProfile(3) : ""}
+      </div>
+    </>
+  );
 };
 
 export default RecruiterForm;

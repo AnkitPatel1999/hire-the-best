@@ -12,10 +12,10 @@ export default function Header() {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user.email);
-        console.log("user = " + user.email);
+        // console.log("user = " + user.email);
       } else {
         setUser(null);
-        console.log("user = " + user);
+        // console.log("user = " + user);
       }
     });
   }, []);
