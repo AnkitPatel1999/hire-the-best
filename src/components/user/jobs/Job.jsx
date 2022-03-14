@@ -1,62 +1,41 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./Job.css";
 import profilepic from "./../../../../src/assets/profilepic.png";
+import { useNavigate } from "react-router-dom";
+import { db } from "./../../../firebase";
+import { collection, getDocs } from "firebase/firestore";
 
 export default function Job() {
-  const jobs = [
-    {
-      jobName: "Python Developer",
-      expectedSalary: "Rs 4 - 9 LPA",
-      experience: "0 - 1 Year",
-      degreeName: "Graduation/Diploma",
-      companyName: "Azim Premiji Foundation",
-      employeeSize: "0 - 20 Employees People",
-      recruiterName: "Manjeet Hooda",
-      recruiterDesignation: "Founder & CEO",
-      companyLocation: "Delhi,DL",
-      companyDescription:
-        "You will be joining a lean team working directly with the Founders...",
-    },
-    {
-      jobName: "Python Developer",
-      expectedSalary: "Rs 4 - 9 LPA",
-      experience: "0 - 1 Year",
-      degreeName: "Graduation/Diploma",
-      companyName: "Azim Premiji Foundation",
-      employeeSize: "0 - 20 Employees People",
-      recruiterName: "Manjeet Hooda",
-      recruiterDesignation: "Founder & CEO",
-      companyLocation: "Delhi,DL",
-      companyDescription:
-        "You will be joining a lean team working directly with the Founders...",
-    },
-  ];
+  const [job, setJob] = useState([]);
+
+  const getJobs = async () => {
+    const jobRef = await getDocs(collection(db, "jobs"));
+    let data = [];
+    jobRef.forEach((res) => {
+      data.push(res.data());
+    });
+    setJob(data);
+    console.log(data);
+  };
+  useEffect(() => {
+    getJobs();
+  }, []);
 
   return (
     <>
-      {jobs.map((job) => {
-        const {
-          jobName,
-          expectedSalary,
-          experience,
-          degreeName,
-          companyName,
-          employeeSize,
-          recruiterName,
-          recruiterDesignation,
-          companyLocation,
-          companyDescription,
-        } = job;
+      {job.map((job,key) => {
+        const { title, salary, experience, education, location, description } =
+          job;
         return (
-          <div className="mt-2">
-            <div class="card w-50 m-auto">
-              <div class="card-body">
+          <div key={key} className="mt-2">
+            <div className="card w-50 m-auto">
+              <div className="card-body">
                 <div className="row">
                   <div className="col-sm-6">
-                    <h5 class="card-title">{jobName}</h5>
+                    <h5 className="card-title">{title}</h5>
                   </div>
                   <div className="col-sm-6 salary">
-                    <p>{expectedSalary}</p>
+                    <p>{salary}</p>
                   </div>
                 </div>
                 <div className="row mt-2">
@@ -64,11 +43,12 @@ export default function Job() {
                     <p className="experience">{experience}</p>
                   </div>
                   <div className="col-sm-9">
-                    <p className="degreeName">{degreeName}</p>
+                    <p className="degreeName">{education}</p>
                   </div>
                 </div>
+
                 <div className="row3">
-                  <div className="companyName">
+                  {/*  <div className="companyName">
                     <p>{companyName}</p>
                   </div>
                   <span className="">|</span>
@@ -84,10 +64,11 @@ export default function Job() {
                   <div className="col-sm-1">|</div>
                   <div className="col-sm-3">
                     <p>{recruiterDesignation}</p>
-                  </div>
+                  </div> */}
+
                   <div className="col-sm-1">|</div>
                   <div className="col-sm-4">
-                    <p>{companyLocation}</p>
+                    <p>{location}</p>
                   </div>
                 </div>
                 <div className="row">
@@ -95,7 +76,7 @@ export default function Job() {
                 </div>
                 <div className="row">
                   <div className="col-sm-12">
-                    <p className="companyDescription">{companyDescription}</p>
+                    <p className="companyDescription">{description}</p>
                   </div>
                 </div>
               </div>
