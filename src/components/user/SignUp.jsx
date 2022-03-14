@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLock,
   faEnvelope,
-  faArrowLeft,
+  faArrowLeft
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from "./../../firebase";
@@ -16,7 +16,7 @@ const SignUp = () => {
   const [userData, setUserData] = useState({
     email: "",
     password: "",
-    confirmPassword: "",
+    confirmPassword: ""
   });
   const [stage, setStage] = useState(1);
   const [iam, setIam] = useState(null);
@@ -50,11 +50,15 @@ const SignUp = () => {
             email: email,
             password: password,
             role: iam,
-            stage:1
+            stage: 1
           })
             .then((res) => {
               console.log(res);
-              navigate("/profile-setup");
+              if (iam === "Recruiter") {
+                navigate("/recruiter-profile-setup");
+              } else {
+                navigate("/profile-setup");
+              }
             })
             .catch((error) => {
               console.log(error);

@@ -84,7 +84,11 @@ const SignIn = () => {
         signInWithEmailAndPassword(auth, email, password)
           .then((res) => {
             console.log(res.user);
-            navigate("/profile-setup");
+            if (iam === "Recruiter") {
+              navigate("/recruiter-profile-setup");
+            } else {
+              navigate("/profile-setup");
+            }
           })
           .catch((error) => {
             setErrors({ ...errors, errorMsg: "Password Wrong" });
