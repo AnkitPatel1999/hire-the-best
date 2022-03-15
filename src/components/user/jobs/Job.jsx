@@ -3,16 +3,28 @@ import "./Job.css";
 import profilepic from "./../../../../src/assets/profilepic.png";
 import { useNavigate } from "react-router-dom";
 import { db } from "./../../../firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDoc, getDocs, doc } from "firebase/firestore";
 
 export default function Job() {
   const [job, setJob] = useState([]);
 
   const getJobs = async () => {
     const jobRef = await getDocs(collection(db, "jobs"));
+    const recruiterRef = await getDocs(collection(db, "recruiter"));
+    let recruiterData = [];
+    recruiterRef.forEach((res) => {
+      console.log(res.data());
+      recruiterData.push(res.data());
+    });
     let data = [];
     jobRef.forEach((res) => {
-      data.push(res.data());
+      console.log(res.data().rid);
+      recruiterData.forEach((rd) => {
+        console.log(rd.rid);
+        if (res.data().rid == rd.rid) {
+          data.push([res.data(), rd]);
+        }
+      });
     });
     setJob(data);
     console.log(data);
@@ -23,9 +35,15 @@ export default function Job() {
 
   return (
     <>
-      {job.map((job,key) => {
+      {job.map((job, key) => {
         const { title, salary, experience, education, location, description } =
-          job;
+          job[0];
+
+        const { firstName, lastName, designation } = job[1].myProfile;
+
+        const { fullName, size, location2 = location } = job[1].company;
+
+        console.log(fullName);
         return (
           <div key={key} className="mt-2">
             <div className="card w-50 m-auto">
@@ -48,23 +66,25 @@ export default function Job() {
                 </div>
 
                 <div className="row3">
-                  {/*  <div className="companyName">
-                    <p>{companyName}</p>
+                  <div className="companyName">
+                    <p>{fullName}</p>
                   </div>
                   <span className="">|</span>
                   <div className="">
-                    <p>{employeeSize}</p>
+                    <p>{size} Employees People</p>
                   </div>
                 </div>
                 <div className="row row4">
                   <div className="col-sm-3 d-flex">
                     <img className="profilepic" src={profilepic} alt="pic" />
-                    <p>{recruiterName}</p>
+                    <p>
+                      {firstName} {lastName}
+                    </p>
                   </div>
                   <div className="col-sm-1">|</div>
                   <div className="col-sm-3">
-                    <p>{recruiterDesignation}</p>
-                  </div> */}
+                    <p>{designation}</p>
+                  </div>
 
                   <div className="col-sm-1">|</div>
                   <div className="col-sm-4">
