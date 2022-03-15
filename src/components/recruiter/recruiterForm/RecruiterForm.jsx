@@ -28,11 +28,13 @@ const RecruiterForm = () => {
   const [stage, setStage] = useState(1);
   const [docEmail, setDocEmail] = useState(null);
   const [companyName, setCompanyName] = useState();
+  const [recruiterId, setRecruiterId] = useState(null);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setDocEmail(user.email);
+        setRecruiterId(user.uid);
         console.log("user = " + user.email);
         getUserByEmail(user.email);
       } else {
@@ -46,9 +48,9 @@ const RecruiterForm = () => {
     const userRef = doc(db, "recruiter", email);
     const docSnap = await getDoc(userRef);
     console.log(docSnap.data());
-    console.log(docSnap.data().company.stage);
-
-    setStage(parseInt(docSnap.data().company.stage));
+    console.log(docSnap.data().stage);
+    setCompanyName(docSnap.data().company.fullName);
+    setStage(parseInt(docSnap.data().stage));
   };
 
   const onSubmitMyProfile = async (data) => {
@@ -61,16 +63,19 @@ const RecruiterForm = () => {
   const onSubmitRegisterCompany = async (data) => {
     const stageRef = parseInt(data.stage);
     console.log(stageRef);
-    console.log(data);
     setCompanyName(data.fullName);
-    console.log(data.fullName);
+    console.log(data);
     await onSaveandNext(stageRef, data, "company");
   };
 
   const onSaveandNext = (stageRef, data, type) => {
-    console.log(type);
+    delete data["stage"];
     const collectionRef = doc(db, "recruiter", docEmail);
-    setDoc(collectionRef, { [type]: data }, { merge: true })
+    setDoc(
+      collectionRef,
+      { [type]: data, stage: stageRef, rid: recruiterId },
+      { merge: true }
+    )
       .then(() => {
         setStage(stageRef);
       })

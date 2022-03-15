@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { auth, db } from "../../firebase";
-import { doc, addDoc,collection, getDoc } from "firebase/firestore";
+import { doc, addDoc, collection, getDoc } from "firebase/firestore";
 import { BtnLoadingProcess } from "../shared/CommanComponent";
 import { useForm } from "react-hook-form";
 import { onAuthStateChanged } from "firebase/auth";
@@ -17,11 +17,13 @@ const RecruiterForm = () => {
   } = useForm();
 
   const [docEmail, setDocEmail] = useState(null);
+  const [recruiterId, setRecruiterId] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setDocEmail(user.email);
+        setRecruiterId(user.uid);
         console.log("user = " + user.email);
         getUserByEmail(user.email);
       } else {
@@ -38,7 +40,9 @@ const RecruiterForm = () => {
   };
 
   const onSubmit = async (data) => {
+    data.rid = recruiterId;
     console.log(data);
+
     await onSaveandNext(data);
   };
 
@@ -67,12 +71,6 @@ const RecruiterForm = () => {
         <h5 className="mt-2">Post a Full Time Job</h5>
         {/* <h6 className="mt-2 mb-2">Introduce your company to candidates</h6> */}
         <form onSubmit={handleSubmit(onSubmit)}>
-        <input
-            type="hidden"
-            name="remail"
-            value={docEmail}
-            {...register("remail")}
-          />
           <div className="form-group mt-2 mb-2">
             <label>Job Title</label>
             <input
