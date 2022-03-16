@@ -21,6 +21,7 @@
   width: 25px;
   height: 25px;
   margin-right: 10px;
+  object-fit: cover;
 }
 
 .hr {
@@ -77,4 +78,8 @@
 .colCenter,
 .desig {
   text-align: center;
+}
+
+.card-body {
+  cursor: pointer;
 }

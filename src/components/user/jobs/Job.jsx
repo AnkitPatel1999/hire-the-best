@@ -8,7 +8,8 @@ import {
   faLocationDot,
   faWallet,
   faBriefcase,
-  faGraduationCap
+  faGraduationCap,
+  faClock
 } from "@fortawesome/free-solid-svg-icons";
 
 export default function Job() {
@@ -104,7 +105,12 @@ export default function Job() {
                   </div>
                   <div className="col-sm-9">
                     <p className="degreeName">
-                    <FontAwesomeIcon className="FAIcon" icon={faGraduationCap} />{education}</p>
+                      <FontAwesomeIcon
+                        className="FAIcon"
+                        icon={faGraduationCap}
+                      />
+                      {education}
+                    </p>
                   </div>
                 </div>
 
@@ -124,7 +130,7 @@ export default function Job() {
                       {firstName} {lastName}
                     </p>
                   </div>
-                  <div className="col-sm-1 colCenter" >|</div>
+                  <div className="col-sm-1 colCenter">|</div>
                   <div className="col-sm-3 desig">
                     <p>{designation}</p>
                   </div>
@@ -142,6 +148,7 @@ export default function Job() {
                 </div>
                 <div className="row">
                   <div className="col-sm-12 timeSince">
+                    <FontAwesomeIcon className="FAIcon" icon={faClock} />
                     {timeSince(createdAt.seconds * 1000)} Ago
                   </div>
                 </div>
