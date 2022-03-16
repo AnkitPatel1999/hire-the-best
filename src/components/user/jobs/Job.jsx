@@ -7,7 +7,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLocationDot,
   faWallet,
-  faBriefcase
+  faBriefcase,
+  faGraduationCap
 } from "@fortawesome/free-solid-svg-icons";
 
 export default function Job() {
@@ -102,7 +103,8 @@ export default function Job() {
                     </p>
                   </div>
                   <div className="col-sm-9">
-                    <p className="degreeName">{education}</p>
+                    <p className="degreeName">
+                    <FontAwesomeIcon className="FAIcon" icon={faGraduationCap} />{education}</p>
                   </div>
                 </div>
 
