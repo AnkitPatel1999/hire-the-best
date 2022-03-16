@@ -7,7 +7,8 @@ import ForgotPassword from './components/user/ForgotPassword'
 import Header from './components/home/Header'
 import ProfileForm from './components/user/profileForm/ProfileForm'
 import Profile from './components/user/profile/Profile'
-import Job from './components/user/jobs/Job'
+import JobList from './components/user/jobs/JobList'
+import JobDescription from './components/user/jobs/JobDescription'
 import RecruiterForm from './components/recruiter/recruiterForm/RecruiterForm'
 import PostJob from './components/recruiter/PostJob'
 import Dashboard from './components/dashboard/Dashboard'
@@ -34,8 +35,9 @@ function App() {
       <BrowserRouter>
         <Header />
         <Routes>
-        {/* {user?:} */} 
-          <Route path="/" element={<Job />} />
+          {/* {user?:} */}
+          <Route path="/" element={<JobList />} />
+          <Route path="/job-description" element={<JobDescription />} />
           <Route path="signin" exact element={<SignIn />} />
           <Route path="signup" element={<SignUp />} />
           <Route path="forgot-password" element={<ForgotPassword />} />

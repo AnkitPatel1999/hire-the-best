@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import "./Job.css";
+import "./Joblist.css";
 import profilepic from "./../../../../src/assets/profilepic.png";
-import { db } from "./../../../firebase";
+import { db } from "../../../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useNavigate } from "react-router-dom";
 import {
   faLocationDot,
   faWallet,
@@ -12,8 +13,9 @@ import {
   faClock
 } from "@fortawesome/free-solid-svg-icons";
 
-export default function Job() {
+export default function JobList() {
   const [job, setJob] = useState([]);
+  const navigate = useNavigate();
 
   const getJobs = async () => {
     const jobRef = await getDocs(collection(db, "jobs"));
@@ -84,7 +86,10 @@ export default function Job() {
         return (
           <div key={key} className="mt-2">
             <div className="card w-50 m-auto">
-              <div className="card-body">
+              <div
+                className="card-body"
+                onClick={() => navigate("/job-description", { state: job })}
+              >
                 <div className="row">
                   <div className="col-sm-6">
                     <h5 className="card-title jobTitle">{title}</h5>
