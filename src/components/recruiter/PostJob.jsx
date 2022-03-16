@@ -2,7 +2,13 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { auth, db } from "../../firebase";
-import { doc, addDoc, collection, getDoc } from "firebase/firestore";
+import {
+  doc,
+  addDoc,
+  collection,
+  getDoc,
+  serverTimestamp
+} from "firebase/firestore";
 import { BtnLoadingProcess } from "../shared/CommanComponent";
 import { useForm } from "react-hook-form";
 import { onAuthStateChanged } from "firebase/auth";
@@ -41,6 +47,7 @@ const RecruiterForm = () => {
 
   const onSubmit = async (data) => {
     data.rid = recruiterId;
+    data.createdAt = new Date();
     console.log(data);
 
     await onSaveandNext(data);
@@ -51,7 +58,7 @@ const RecruiterForm = () => {
     await addDoc(collectionRef, data)
       .then(() => {
         console.log("done");
-        // navigate("/");
+        navigate("/dashboard");
       })
       .catch((error) => {
         console.log(error);
@@ -129,7 +136,7 @@ const RecruiterForm = () => {
           </div>
 
           <button type="submit" className="btn btn-primary mt-2 btn-block">
-            <BtnLoadingProcess loading={false} btnMsg="Save & Next" />
+            <BtnLoadingProcess loading={false} btnMsg="Save" />
           </button>
         </form>
       </div>

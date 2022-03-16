@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
 import "./Job.css";
 import profilepic from "./../../../../src/assets/profilepic.png";
-import { useNavigate } from "react-router-dom";
 import { db } from "./../../../firebase";
-import { collection, getDoc, getDocs, doc } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faLocationDot,
+  faWallet,
+  faBriefcase
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function Job() {
   const [job, setJob] = useState([]);
@@ -13,37 +18,72 @@ export default function Job() {
     const recruiterRef = await getDocs(collection(db, "recruiter"));
     let recruiterData = [];
     recruiterRef.forEach((res) => {
-      console.log(res.data());
       recruiterData.push(res.data());
     });
     let data = [];
     jobRef.forEach((res) => {
-      console.log(res.data().rid);
       recruiterData.forEach((rd) => {
-        console.log(rd.rid);
         if (res.data().rid == rd.rid) {
           data.push([res.data(), rd]);
         }
       });
     });
     setJob(data);
-    console.log(data);
   };
+
+  const timeSince = (date) => {
+    console.log("date = " + date);
+    var seconds = Math.floor((new Date() - date) / 1000);
+
+    var interval = seconds / 31536000;
+
+    if (interval > 1) {
+      return Math.floor(interval) + " Years";
+    }
+    interval = seconds / 2592000;
+    if (interval > 1) {
+      return Math.floor(interval) + " Months";
+    }
+    interval = seconds / 86400;
+    if (interval > 1) {
+      return Math.floor(interval) + " Days";
+    }
+    interval = seconds / 3600;
+    if (interval > 1) {
+      return Math.floor(interval) + " Hours";
+    }
+    interval = seconds / 60;
+    if (interval > 1) {
+      return Math.floor(interval) + " Minutes";
+    }
+    return Math.floor(seconds) + " Seconds";
+  };
+
   useEffect(() => {
     getJobs();
+
+    // var aDay = 24 * 60 * 60 * 1000;
+    // console.log(timeSince(new Date(Date.now() - aDay)));
+    // console.log(timeSince(new Date(Date.now() - aDay * 2)));
   }, []);
 
   return (
     <>
       {job.map((job, key) => {
-        const { title, salary, experience, education, location, description } =
-          job[0];
+        const {
+          title,
+          salary,
+          experience,
+          education,
+          location,
+          description,
+          createdAt
+        } = job[0];
 
         const { firstName, lastName, designation } = job[1].myProfile;
 
         const { fullName, size, location2 = location } = job[1].company;
 
-        console.log(fullName);
         return (
           <div key={key} className="mt-2">
             <div className="card w-50 m-auto">
@@ -53,12 +93,18 @@ export default function Job() {
                     <h5 className="card-title">{title}</h5>
                   </div>
                   <div className="col-sm-6 salary">
-                    <p>{salary}</p>
+                    <p>
+                      <FontAwesomeIcon className="FAIcon" icon={faWallet} />
+                      {salary}
+                    </p>
                   </div>
                 </div>
                 <div className="row mt-2">
                   <div className="col-sm-3">
-                    <p className="experience">{experience}</p>
+                    <p className="experience">
+                      <FontAwesomeIcon className="FAIcon" icon={faBriefcase} />
+                      {experience}
+                    </p>
                   </div>
                   <div className="col-sm-9">
                     <p className="degreeName">{education}</p>
@@ -88,8 +134,17 @@ export default function Job() {
 
                   <div className="col-sm-1">|</div>
                   <div className="col-sm-4">
-                    <p>{location}</p>
+                    <p>
+                      <FontAwesomeIcon
+                        className="FAIcon"
+                        icon={faLocationDot}
+                      />
+                      {location}
+                    </p>
                   </div>
+                </div>
+                <div className="row">
+                  {timeSince(createdAt.seconds * 1000)} Ago
                 </div>
                 <div className="row">
                   <hr className="hr" />

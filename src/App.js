@@ -10,6 +10,7 @@ import Profile from './components/user/profile/Profile'
 import Job from './components/user/jobs/Job'
 import RecruiterForm from './components/recruiter/recruiterForm/RecruiterForm'
 import PostJob from './components/recruiter/PostJob'
+import Dashboard from './components/dashboard/Dashboard'
 // import Home from './components/home/Home'
 import { auth } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -43,6 +44,7 @@ function App() {
 
           <Route path="recruiter-profile-setup" element={<RecruiterForm />} />
           <Route path="post-job" element={<PostJob />} />
+          <Route path="dashboard" element={<Dashboard />} />
 
         </Routes>
       </BrowserRouter>
