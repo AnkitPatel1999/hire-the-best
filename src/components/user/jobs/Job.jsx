@@ -32,7 +32,6 @@ export default function Job() {
   };
 
   const timeSince = (date) => {
-    console.log("date = " + date);
     var seconds = Math.floor((new Date() - date) / 1000);
 
     var interval = seconds / 31536000;
@@ -61,10 +60,6 @@ export default function Job() {
 
   useEffect(() => {
     getJobs();
-
-    // var aDay = 24 * 60 * 60 * 1000;
-    // console.log(timeSince(new Date(Date.now() - aDay)));
-    // console.log(timeSince(new Date(Date.now() - aDay * 2)));
   }, []);
 
   return (
@@ -90,7 +85,7 @@ export default function Job() {
               <div className="card-body">
                 <div className="row">
                   <div className="col-sm-6">
-                    <h5 className="card-title">{title}</h5>
+                    <h5 className="card-title jobTitle">{title}</h5>
                   </div>
                   <div className="col-sm-6 salary">
                     <p>
@@ -117,7 +112,7 @@ export default function Job() {
                   </div>
                   <span className="">|</span>
                   <div className="">
-                    <p>{size} Employees People</p>
+                    <p>{size} Employees</p>
                   </div>
                 </div>
                 <div className="row row4">
@@ -127,13 +122,13 @@ export default function Job() {
                       {firstName} {lastName}
                     </p>
                   </div>
-                  <div className="col-sm-1">|</div>
-                  <div className="col-sm-3">
+                  <div className="col-sm-1 colCenter" >|</div>
+                  <div className="col-sm-3 desig">
                     <p>{designation}</p>
                   </div>
 
-                  <div className="col-sm-1">|</div>
-                  <div className="col-sm-4">
+                  <div className="col-sm-1 colCenter">|</div>
+                  <div className="col-sm-4 jobAddress">
                     <p>
                       <FontAwesomeIcon
                         className="FAIcon"
@@ -144,7 +139,9 @@ export default function Job() {
                   </div>
                 </div>
                 <div className="row">
-                  {timeSince(createdAt.seconds * 1000)} Ago
+                  <div className="col-sm-12 timeSince">
+                    {timeSince(createdAt.seconds * 1000)} Ago
+                  </div>
                 </div>
                 <div className="row">
                   <hr className="hr" />

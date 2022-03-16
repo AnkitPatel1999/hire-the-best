@@ -10,8 +10,8 @@
   margin: 7px 0 0 0;
 }
 
-.row3>span {
-margin-right: 8px;
+.row3 > span {
+  margin-right: 8px;
 }
 .companyName {
   margin-right: 10px;
@@ -41,11 +41,38 @@ margin-right: 8px;
   color: #797e7e;
 }
 
-.companyDescription{
+.companyDescription {
   font-size: 14px;
+  width: 640px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-.row4{
+.row4 {
   font-size: 15px;
   padding: 10px 0px;
+}
+
+.jobTitle {
+  width: 400px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.jobAddress p {
+  width: 200px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.timeSince {
+  font-size: 13px;
+  color: gray;
+}
+
+.colCenter,.desig {
+  text-align: center;
 }
