@@ -49,6 +49,11 @@ const RecruiterForm = () => {
     const docSnap = await getDoc(userRef);
     console.log(docSnap.data());
     console.log(docSnap.data().stage);
+
+    if(docSnap.data().stage ===3) {
+      navigate("/dashboard")
+    }
+
     setCompanyName(docSnap.data().company.fullName);
     setStage(parseInt(docSnap.data().stage));
   };
