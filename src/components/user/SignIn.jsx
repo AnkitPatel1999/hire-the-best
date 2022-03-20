@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLock,
   faEnvelope,
-  faArrowLeft,
+  faArrowLeft
 } from "@fortawesome/free-solid-svg-icons";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -11,20 +11,23 @@ import { auth, db } from "./../../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import Home from "../home/Home";
+import { useDispatch } from "react-redux";
+import { Login } from "../redux/actions/userAction";
 
 const SignIn = () => {
   let navigate = useNavigate();
+  const dispatch = useDispatch();
   const [userInput, setUserInput] = useState({ email: "", password: "" });
   const [stage, setStage] = useState(1);
   const [process, setProcess] = useState({
     loading: false,
     success: false,
-    error: false,
+    error: false
   });
   let [errors, setErrors] = useState({
     emailError: "",
     passwordError: "",
-    errorMsg: "",
+    errorMsg: ""
   });
   const [iam, setIam] = useState(null);
   const { email, password } = userInput;
@@ -54,21 +57,21 @@ const SignIn = () => {
     if (!email && !password) {
       setErrors({
         emailError: "Email is required",
-        passwordError: "Password is required",
+        passwordError: "Password is required"
       });
       throw new Error("Invalid email and password");
     } else if (!email) {
       setErrors({
         ...errors,
         emailError: "Email is required",
-        passwordError: "",
+        passwordError: ""
       });
       throw new Error("Invalid email");
     } else if (!password) {
       setErrors({
         ...errors,
         emailError: "",
-        passwordError: "Password is required",
+        passwordError: "Password is required"
       });
       throw new Error("Invalid  password");
     }
@@ -84,6 +87,7 @@ const SignIn = () => {
         signInWithEmailAndPassword(auth, email, password)
           .then((res) => {
             console.log(res.user);
+            dispatch(Login(res.user.email));
             if (iam === "Recruiter") {
               navigate("/recruiter-profile-setup");
             } else {

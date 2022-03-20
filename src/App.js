@@ -16,20 +16,22 @@ import Dashboard from './components/dashboard/Dashboard'
 
 import { auth } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { useSelector, useDispatch } from "react-redux";
+import { setUser } from "./components/redux/actions/userAction"
 
 function App() {
-  const [user, setUser] = useState(null);
+  const dispatch = useDispatch()
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        setUser(user.email);
-      } else {
-        setUser(null);
+        dispatch(setUser(user.email))
       }
     });
   }, []);
 
   const PrivateRoute = ({ children }) => {
+    const user = useSelector(state => state.user.user)
+
     console.log(user)
     console.log(children)
 
@@ -45,7 +47,6 @@ function App() {
       <BrowserRouter>
         <Header />
         <Routes>
-          {console.log(user)}
           <Route path="/" exact element={<JobList />} />
           <Route path="/job-description" exact element={
             <PrivateRoute>
