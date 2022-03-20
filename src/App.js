@@ -14,27 +14,18 @@ import PostJob from './components/recruiter/PostJob'
 import Dashboard from './components/dashboard/Dashboard'
 // import PrivateRoute from './components/helper/PrivateRoute'
 
-import { auth } from "./firebase";
-import { onAuthStateChanged } from "firebase/auth";
+
 import { useSelector, useDispatch } from "react-redux";
-import { setUser } from "./components/redux/actions/userAction"
 
 function App() {
-  const dispatch = useDispatch()
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        dispatch(setUser(user.email))
-      }
-    });
-  }, []);
+
+  const user = useSelector(state =>state.user.user)
+  console.log(user?.email)
 
   const PrivateRoute = ({ children }) => {
     const user = useSelector(state => state.user.user)
 
-    console.log(user)
-    console.log(children)
-
+    console.log(user?.email)
     if (user) {
       return children
     } else {

@@ -7,9 +7,9 @@ export const Login = (data) => {
     }
 }
 
-export const setUser = (data) => {
+export const isAuthenticated = (data) => {
     return {
-        type: ActionTypes.SET_USER,
+        type: ActionTypes.IS_AUTH,
         payload: data
     }
 }
